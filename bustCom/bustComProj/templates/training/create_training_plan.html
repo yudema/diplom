@@ -1,0 +1,33 @@
+{% extends "bustComProj/base.html" %}
+
+{% block title %}Создание плана обучения{% endblock %}
+
+{% block content %}
+<h2>📋 Создание плана обучения</h2>
+
+<form method="post">
+    {% csrf_token %}
+    
+    <label for="name">Название плана:</label>
+    <input type="text" id="name" name="name" required>
+
+    <label for="description">Описание:</label>
+    <textarea id="description" name="description" rows="4" required></textarea>
+
+    <label for="start_date">Дата начала:</label>
+    <input type="date" id="start_date" name="start_date" required>
+
+    <label for="end_date">Дата окончания:</label>
+    <input type="date" id="end_date" name="end_date">
+
+    <label for="courses">Выберите курсы:</label>
+    <select id="courses" name="courses" multiple>
+        {% for course in courses %}
+        <option value="{{ course.id }}">{{ course.name }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">📌 Сохранить</button>
+</form>
+
+{% endblock %}

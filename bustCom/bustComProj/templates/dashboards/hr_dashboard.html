@@ -1,0 +1,10 @@
+{% extends "dashboards/dashboard_base.html" %}
+
+{% block title %}Панель HR-менеджера{% endblock %}
+
+{% block extra_links %}
+<li><a href="{% url 'assign_courses' %}">📌 Назначить курсы</a></li>
+<li><a href="{% url 'track_performance' %}">📈 Мониторинг успеваемости</a></li>
+<li><a href="{% url 'training_evaluation' %}">🔍 Оценка эффективности</a></li>
+
+{% endblock %}

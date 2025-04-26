@@ -1,0 +1,160 @@
+{% extends 'bustComProj/base.html' %}
+{% load static %}
+
+{% block title %}Панель сотрудника{% endblock %}
+
+{% block content %}
+<div class="container fade-in">
+    <div class="section">
+        <div class="welcome-section mb-4">
+            <h1 class="section-title">Личный кабинет</h1>
+            <p class="lead">Добро пожаловать, {{ user.get_full_name|default:user.username }}!</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="section">
+                    <div class="section-header d-flex justify-content-between align-items-center">
+                        <h2 class="section-title">Мои курсы</h2>
+                        <div class="button-group">
+                            <a href="{% url 'my_requests' %}" class="btn btn-primary">
+                                <i class="fas fa-clipboard-list me-2"></i>
+                                <span>Мои заявки</span>
+                            </a>
+                            <a href="{% url 'courses_list' %}" class="btn btn-info">
+                                <i class="fas fa-search me-2"></i>
+                                <span>Найти курсы</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    {% if courses_with_progress %}
+                        <div class="courses-container">
+                            {% for course_data in courses_with_progress %}
+                                <div class="card mb-3">
+                                    <div class="card-header bg-primary text-white">
+                                        <h3 class="mb-0">{{ course_data.course.title }}</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <p class="mb-2">{{ course_data.course.description }}</p>
+                                            <div class="d-flex align-items-center text-muted mb-2">
+                                                <i class="fas fa-user-tie me-2"></i>
+                                                <span>Преподаватель: {{ course_data.course.teacher.get_full_name|default:course_data.course.teacher.username }}</span>
+                                            </div>
+                                            <div class="d-flex align-items-center text-muted">
+                                                <i class="fas fa-calendar-alt me-2"></i>
+                                                <span>Дата начала: {{ course_data.course.created_at|date:"d.m.Y" }}</span>
+                                            </div>
+                                            <div class="d-flex align-items-center text-muted mt-2">
+                                                <i class="fas fa-book me-2"></i>
+                                                <span>Прогресс: {{ course_data.completed_lectures }} из {{ course_data.total_lectures }} лекций</span>
+                                            </div>
+                                        </div>
+                                        <div class="progress mb-3" style="height: 10px;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ course_data.progress_percentage }}%;" aria-valuenow="{{ course_data.progress_percentage }}" aria-valuemin="0" aria-valuemax="100">{{ course_data.progress_percentage }}%</div>
+                                        </div>
+                                        <div class="d-flex justify-content-end">
+                                            <a href="{% url 'course_detail' course_data.course.id %}" class="btn btn-outline-primary">
+                                                <i class="fas fa-eye me-1"></i> Перейти к курсу
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-info-circle fa-2x me-3"></i>
+                                <div>
+                                    <p class="mb-0">У вас пока нет назначенных курсов. Вы можете найти интересующие вас курсы и подать заявку на обучение.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4">
+                            <a href="{% url 'courses_list' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-search me-2"></i> Найти курсы
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="section">
+                    <h2 class="section-title">Статистика</h2>
+                    <div class="stats-container">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="text-muted mb-1">Завершено курсов</h5>
+                                        <h3 class="mb-0">{{ completed_courses_count }} из {{ total_courses }}</h3>
+                                    </div>
+                                    <div class="icon-box bg-primary">
+                                        <i class="fas fa-graduation-cap"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="text-muted mb-1">Средний балл</h5>
+                                        <h3 class="mb-0">{{ avg_score }}</h3>
+                                    </div>
+                                    <div class="icon-box bg-success">
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="text-muted mb-1">Пройдено тестов</h5>
+                                        <h3 class="mb-0">{{ total_tests_taken }}</h3>
+                                    </div>
+                                    <div class="icon-box bg-info">
+                                        <i class="fas fa-clipboard-check"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2 class="section-title">Быстрые действия</h2>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'profile' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-user me-2"></i> Мой профиль
+                        </a>
+                        <a href="{% url 'my_certificates' %}" class="btn btn-outline-success">
+                            <i class="fas fa-certificate me-2"></i> Мои сертификаты
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .icon-box {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "bustComProj/base.html" %}
+
+{% block title %}Редактировать курс{% endblock %}
+
+{% block content %}
+<h2>✏️ Редактирование курса: {{ course.name }}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+</form>
+
+<a href="{% url 'courses_list' %}">🔙 Назад к списку курсов</a>
+{% endblock %}

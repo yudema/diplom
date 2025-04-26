@@ -1,0 +1,128 @@
+{% extends 'bustComProj/base.html' %}
+
+{% block title %}Руководство пользователя{% endblock %}
+
+{% block content %}
+<div class="guide-container">
+    <div class="guide-card">
+        <div class="guide-header">
+            <h1>{{ guide.title }}</h1>
+        </div>
+        
+        <div class="guide-content">
+            {{ guide.content|safe }}
+        </div>
+        
+        <form method="post" class="guide-form">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-check"></i>
+                Понятно, продолжить
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .guide-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - var(--header-height) - var(--footer-height));
+        padding: var(--spacing-md);
+    }
+
+    .guide-card {
+        width: 100%;
+        max-width: 800px;
+        background: var(--background-light);
+        border-radius: var(--border-radius);
+        padding: var(--spacing-xl);
+        box-shadow: var(--shadow-lg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .guide-header {
+        text-align: center;
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .guide-header h1 {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-xs);
+        font-weight: 600;
+    }
+
+    .guide-content {
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .guide-content h2 {
+        color: var(--primary-color);
+        margin: var(--spacing-lg) 0 var(--spacing-md);
+        font-size: 1.5rem;
+    }
+
+    .guide-content h3 {
+        color: var(--secondary-color);
+        margin: var(--spacing-md) 0 var(--spacing-sm);
+        font-size: 1.25rem;
+    }
+
+    .guide-content p {
+        margin-bottom: var(--spacing-md);
+        line-height: 1.6;
+    }
+
+    .guide-content ul {
+        margin-bottom: var(--spacing-md);
+        padding-left: var(--spacing-lg);
+    }
+
+    .guide-content li {
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .guide-form {
+        text-align: center;
+    }
+
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-md) var(--spacing-xl);
+        font-size: 1.1rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--text-primary);
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .guide-card {
+            padding: var(--spacing-md);
+        }
+
+        .guide-header h1 {
+            font-size: 1.75rem;
+        }
+
+        .guide-content h2 {
+            font-size: 1.25rem;
+        }
+
+        .guide-content h3 {
+            font-size: 1.1rem;
+        }
+    }
+</style>
+{% endblock %} 

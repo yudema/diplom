@@ -1,0 +1,94 @@
+{% extends 'bustComProj/base.html' %}
+
+{% block title %}Настройка сложности тестов{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Настройка сложности тестов</h1>
+    
+    <div class="grid">
+        {% for test in tests %}
+        <div class="card">
+            <h2 class="mb-3">{{ test.title }}</h2>
+            <p class="mb-3">{{ test.description }}</p>
+            
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="test_id" value="{{ test.id }}">
+                
+                <div class="form-group">
+                    <label for="difficulty_{{ test.id }}" class="form-label">Сложность</label>
+                    <select id="difficulty_{{ test.id }}" name="difficulty" class="form-control" required>
+                        <option value="easy" {% if test.difficulty == 'easy' %}selected{% endif %}>Легкий</option>
+                        <option value="medium" {% if test.difficulty == 'medium' %}selected{% endif %}>Средний</option>
+                        <option value="hard" {% if test.difficulty == 'hard' %}selected{% endif %}>Сложный</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="time_limit_{{ test.id }}" class="form-label">Временной лимит (минуты)</label>
+                    <input type="number" id="time_limit_{{ test.id }}" name="time_limit" 
+                           class="form-control" value="{{ test.time_limit }}" min="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="passing_score_{{ test.id }}" class="form-label">Проходной балл (%)</label>
+                    <input type="number" id="passing_score_{{ test.id }}" name="passing_score" 
+                           class="form-control" value="{{ test.passing_score }}" min="0" max="100" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="max_attempts_{{ test.id }}" class="form-label">Максимальное количество попыток</label>
+                    <input type="number" id="max_attempts_{{ test.id }}" name="max_attempts" 
+                           class="form-control" value="{{ test.max_attempts }}" min="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Дополнительные настройки</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="randomize_questions" 
+                                   {% if test.randomize_questions %}checked{% endif %}>
+                            Случайный порядок вопросов
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="show_answers" 
+                                   {% if test.show_answers %}checked{% endif %}>
+                            Показывать правильные ответы после завершения
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-save"></i> Сохранить настройки
+                </button>
+            </form>
+        </div>
+        {% empty %}
+        <div class="card">
+            <p class="text-center">Нет доступных тестов для настройки</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .checkbox-group {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+    
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        cursor: pointer;
+    }
+    
+    .checkbox-label input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+    }
+</style>
+{% endblock %} 

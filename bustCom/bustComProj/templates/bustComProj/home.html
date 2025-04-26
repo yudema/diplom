@@ -1,0 +1,48 @@
+{% extends 'bustComProj/base.html' %}
+{% load static %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <div class="hero-section">
+        <h1 class="hero-title">Добро пожаловать на BustCom!</h1>
+        <p class="hero-subtitle">Платформа для онлайн-обучения</p>
+    </div>
+</div>
+
+<style>
+    .home-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .hero-section {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 3rem 1rem;
+        background: linear-gradient(45deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .hero-title {
+        font-size: clamp(2rem, 6vw, 3.5rem);
+        color: #00ffff;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1rem, 3vw, 1.25rem);
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    @media (max-width: 768px) {
+        .home-container {
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock %}

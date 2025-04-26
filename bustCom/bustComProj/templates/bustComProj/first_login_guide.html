@@ -1,0 +1,150 @@
+{% extends 'bustComProj/base.html' %}
+
+{% block title %}Добро пожаловать!{% endblock %}
+
+{% block content %}
+<div class="guide-container">
+    <div class="guide-card">
+        <div class="guide-header">
+            <h1>Добро пожаловать в систему обучения!</h1>
+        </div>
+        
+        <div class="guide-content">
+            <h2>Как начать обучение:</h2>
+            <ol>
+                <li>
+                    <strong>Пройти тест на определение уровня</strong>
+                    <p>Сначала вам нужно будет пройти небольшой тест, который поможет определить ваш текущий уровень знаний в программировании и других областях.</p>
+                </li>
+                <li>
+                    <strong>Получить рекомендации</strong>
+                    <p>На основе результатов теста система подберет для вас наиболее подходящие курсы.</p>
+                </li>
+                <li>
+                    <strong>Записаться на курс</strong>
+                    <p>Выберите интересующий вас курс из списка рекомендованных и нажмите кнопку "Записаться".</p>
+                </li>
+                <li>
+                    <strong>Начать обучение</strong>
+                    <p>После записи на курс вы получите доступ к материалам и сможете начать обучение.</p>
+                </li>
+            </ol>
+
+            <h2>Структура курсов:</h2>
+            <ul>
+                <li>Каждый курс состоит из лекций и практических заданий</li>
+                <li>После каждой лекции есть тест для проверки знаний</li>
+                <li>По завершении курса вы получите сертификат</li>
+            </ul>
+        </div>
+        
+        <form method="post" class="guide-form">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-check"></i>
+                Понятно, начать тест
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .guide-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - var(--header-height) - var(--footer-height));
+        padding: var(--spacing-md);
+    }
+
+    .guide-card {
+        width: 100%;
+        max-width: 800px;
+        background: var(--background-light);
+        border-radius: var(--border-radius);
+        padding: var(--spacing-xl);
+        box-shadow: var(--shadow-lg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .guide-header {
+        text-align: center;
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .guide-header h1 {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-xs);
+        font-weight: 600;
+    }
+
+    .guide-content {
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .guide-content h2 {
+        color: var(--primary-color);
+        margin: var(--spacing-lg) 0 var(--spacing-md);
+        font-size: 1.5rem;
+    }
+
+    .guide-content ol, .guide-content ul {
+        margin-bottom: var(--spacing-lg);
+        padding-left: var(--spacing-lg);
+    }
+
+    .guide-content li {
+        margin-bottom: var(--spacing-md);
+        line-height: 1.6;
+    }
+
+    .guide-content li strong {
+        color: var(--secondary-color);
+        display: block;
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .guide-content li p {
+        margin: var(--spacing-xs) 0;
+        color: var(--text-secondary);
+    }
+
+    .guide-form {
+        text-align: center;
+    }
+
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-md) var(--spacing-xl);
+        font-size: 1.1rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--text-primary);
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .guide-card {
+            padding: var(--spacing-md);
+        }
+
+        .guide-header h1 {
+            font-size: 1.75rem;
+        }
+
+        .guide-content h2 {
+            font-size: 1.25rem;
+        }
+    }
+</style>
+{% endblock %} 

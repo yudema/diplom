@@ -1,0 +1,27 @@
+{% extends "dashboards/dashboard_base.html" %}
+
+{% block title %}Проведение обучения{% endblock %}
+
+{% block content %}
+<h2>Добавить материал к лекции</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="lecture">Выберите лекцию:</label>
+    <select name="lecture_id">
+        {% for lecture in lectures %}
+            <option value="{{ lecture.id }}">{{ lecture.title }}</option>
+        {% endfor %}
+    </select>
+    
+    <label for="resource_type">Тип ресурса:</label>
+    <select name="resource_type">
+        <option value="file">Файл</option>
+        <option value="video">Видео</option>
+    </select>
+
+    <label for="resource_path">Ссылка на ресурс:</label>
+    <input type="text" name="resource_path" required>
+
+    <button type="submit">Добавить</button>
+</form>
+{% endblock %}

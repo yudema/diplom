@@ -1,0 +1,163 @@
+{% extends 'bustComProj/base.html' %}
+
+{% block title %}Тест для рекомендаций{% endblock %}
+
+{% block content %}
+<div class="test-container">
+    <div class="test-card">
+        <div class="test-header">
+            <h1>Тест для рекомендаций курсов</h1>
+            <p>Пожалуйста, ответьте на несколько вопросов, чтобы мы могли подобрать для вас наиболее подходящие курсы.</p>
+        </div>
+        
+        <form method="post" class="test-form">
+            {% csrf_token %}
+            
+            {% for question in questions %}
+            <div class="question-block">
+                <h3>{{ question.question }}</h3>
+                <div class="options">
+                    {% for key, value in question.options.items %}
+                    <label class="option">
+                        <input type="radio" name="question_{{ question.id }}" value="{{ key }}" required>
+                        <span class="option-text">{{ value }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+            
+            <div class="test-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check"></i>
+                    Завершить тест
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .test-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - var(--header-height) - var(--footer-height));
+        padding: var(--spacing-md);
+    }
+
+    .test-card {
+        width: 100%;
+        max-width: 800px;
+        background: var(--background-light);
+        border-radius: var(--border-radius);
+        padding: var(--spacing-xl);
+        box-shadow: var(--shadow-lg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .test-header {
+        text-align: center;
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .test-header h1 {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-sm);
+        font-weight: 600;
+    }
+
+    .test-header p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+    }
+
+    .question-block {
+        margin-bottom: var(--spacing-xl);
+        padding: var(--spacing-lg);
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: var(--border-radius);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .question-block h3 {
+        color: var(--text-primary);
+        margin-bottom: var(--spacing-md);
+        font-size: 1.25rem;
+    }
+
+    .options {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+
+    .option {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .option:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .option input[type="radio"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    .option-text {
+        font-size: 1.1rem;
+        color: var(--text-primary);
+    }
+
+    .test-actions {
+        text-align: center;
+        margin-top: var(--spacing-xl);
+    }
+
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-md) var(--spacing-xl);
+        font-size: 1.1rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--text-primary);
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .test-card {
+            padding: var(--spacing-md);
+        }
+
+        .test-header h1 {
+            font-size: 1.75rem;
+        }
+
+        .question-block {
+            padding: var(--spacing-md);
+        }
+
+        .option-text {
+            font-size: 1rem;
+        }
+    }
+</style>
+{% endblock %} 

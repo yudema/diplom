@@ -1,0 +1,18 @@
+{% extends "dashboards/dashboard_base.html" %}
+
+{% block title %}Ответы на вопросы студентов{% endblock %}
+
+{% block content %}
+<h2>Ответы на вопросы студентов</h2>
+<ul>
+    {% for question in questions %}
+        <li><strong>{{ question.question_text }}</strong></li>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="question_id" value="{{ question.id }}">
+            <input type="text" name="answer_text" placeholder="Введите ответ">
+            <button type="submit">Ответить</button>
+        </form>
+    {% endfor %}
+</ul>
+{% endblock %}

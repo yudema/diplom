@@ -1,0 +1,39 @@
+{% extends 'bustComProj/base.html' %}
+
+{% block title %}Тест - {{ lecture.title }}{% endblock %}
+
+{% block content %}
+    <h1>Тест к лекции: {{ lecture.title }}</h1>
+
+    {% if questions %}
+        <form method="post">
+            {% csrf_token %}
+            {% for question in questions %}
+                <p><strong>{{ question.question_text }}</strong></p>
+                {% for answer in question.answer_set.all %}
+                    <label>
+                        <input type="radio" name="question_{{ question.id }}" value="{{ answer.id }}">
+                        {{ answer.answer_text }}
+                    </label><br>
+                {% endfor %}
+            {% endfor %}
+            <br>
+            <button type="submit">Отправить ответы</button>
+        </form>
+    {% else %}
+        <p>Тест еще не добавлен.</p>
+        
+        {% if user.profile.role == "teacher" or user.profile.role == "admin" %}
+            <a href="{% url 'add_test' lecture.id %}" class="btn">Добавить тест</a>
+        {% endif %}
+    {% endif %}
+    <h3>Ваши попытки:</h3>
+    <ul>
+        {% for attempt in attempts %}
+            <li>{{ attempt.attempt_date }} – Баллы: {{ attempt.score }} / {{ attempt.total_questions }} ({{ attempt.percentage }}%)</li>
+        {% endfor %}
+    </ul>
+
+
+    <a href="{% url 'lecture_detail' lecture.id %}">← Назад к лекции</a>
+{% endblock %}

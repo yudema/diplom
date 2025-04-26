@@ -1,0 +1,6 @@
+<h2>Отзывы студентов</h2>
+<ul>
+    {% for feedback in feedbacks %}
+        <li>{{ feedback.user.username }}: {{ feedback.text }} ({{ feedback.created_at }})</li>
+    {% endfor %}
+</ul>

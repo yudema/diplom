@@ -1,0 +1,145 @@
+{% extends 'bustComProj/base.html' %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <nav class="nav-menu">
+            <div class="nav-section">
+                <h3>Основное меню</h3>
+                <ul>
+                    <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> Главная</a></li>
+                    <li><a href="{% url 'dashboard_redirect' %}"><i class="fas fa-tachometer-alt"></i> Панель управления</a></li>
+                    {% block main_menu %}{% endblock %}
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Дополнительно</h3>
+                <ul>
+                    {% block extra_menu %}{% endblock %}
+                    <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Выход</a></li>
+                </ul>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="dashboard-header">
+            <h1>{% block dashboard_title %}Панель управления{% endblock %}</h1>
+        </header>
+
+        <div class="dashboard-content">
+            {% block dashboard_content %}{% endblock %}
+        </div>
+    </main>
+</div>
+
+<style>
+    .dashboard-container {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        min-height: 100vh;
+        background: #1a1a1a;
+    }
+
+    .sidebar {
+        background: rgba(22, 22, 22, 0.95);
+        border-right: 1px solid rgba(0, 255, 255, 0.1);
+        padding: 2rem 0;
+    }
+
+    .nav-menu {
+        position: sticky;
+        top: 2rem;
+    }
+
+    .nav-section {
+        margin-bottom: 2rem;
+        padding: 0 1.5rem;
+    }
+
+    .nav-section h3 {
+        color: #00ffff;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    }
+
+    .nav-section ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .nav-section li {
+        margin-bottom: 0.5rem;
+    }
+
+    .nav-section a {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .nav-section a:hover {
+        background: rgba(0, 255, 255, 0.1);
+        color: #00ffff;
+    }
+
+    .nav-section a i {
+        margin-right: 0.75rem;
+        font-size: 1.1rem;
+        width: 20px;
+        text-align: center;
+    }
+
+    .main-content {
+        padding: 2rem;
+    }
+
+    .dashboard-header {
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-header h1 {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        color: #00ffff;
+        margin: 0;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+
+    .dashboard-content {
+        background: rgba(22, 22, 22, 0.95);
+        border: 1px solid rgba(0, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-container {
+            grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+            display: none;
+        }
+
+        .main-content {
+            padding: 1rem;
+        }
+
+        .dashboard-content {
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock %}

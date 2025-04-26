@@ -1,0 +1,590 @@
+/* Улучшенные стили для BustCom */
+
+/* Улучшенные стили для кнопок */
+.btn,
+button,
+input[type="submit"],
+input[type="button"],
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-danger,
+.btn-info,
+.btn-warning,
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-success,
+.btn-outline-danger,
+.btn-outline-info,
+.btn-outline-warning,
+a.btn,
+a.btn-action,
+a.btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    border: none;
+    text-align: center;
+    margin: 5px;
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Эффект наведения для всех кнопок */
+.btn:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-success:hover,
+.btn-danger:hover,
+.btn-info:hover,
+.btn-warning:hover,
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover,
+.btn-outline-success:hover,
+.btn-outline-danger:hover,
+.btn-outline-info:hover,
+.btn-outline-warning:hover,
+a.btn:hover,
+a.btn-action:hover,
+a.btn-outline:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Эффект нажатия для всех кнопок */
+.btn:active,
+button:active,
+input[type="submit"]:active,
+input[type="button"]:active,
+.btn-primary:active,
+.btn-secondary:active,
+.btn-success:active,
+.btn-danger:active,
+.btn-info:active,
+.btn-warning:active,
+.btn-outline-primary:active,
+.btn-outline-secondary:active,
+.btn-outline-success:active,
+.btn-outline-danger:active,
+.btn-outline-info:active,
+.btn-outline-warning:active,
+a.btn:active,
+a.btn-action:active,
+a.btn-outline:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Цветовые схемы для основных кнопок */
+.btn-primary, 
+.btn-action,
+input[type="submit"] {
+    background: linear-gradient(135deg, #5e72e4, #335eea);
+    color: white;
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #5a6268, #343a40);
+    color: white;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #2dce89, #28a745);
+    color: white;
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #f5365c, #dc3545);
+    color: white;
+}
+
+.btn-info {
+    background: linear-gradient(135deg, #11cdef, #17a2b8);
+    color: white;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #fb6340, #ffc107);
+    color: white;
+}
+
+/* Стили для контуров кнопок */
+.btn-outline-primary,
+.btn-outline {
+    border: 2px solid #5e72e4;
+    background: transparent;
+    color: #5e72e4;
+}
+
+.btn-outline-secondary {
+    border: 2px solid #5a6268;
+    background: transparent;
+    color: #5a6268;
+}
+
+.btn-outline-success {
+    border: 2px solid #2dce89;
+    background: transparent;
+    color: #2dce89;
+}
+
+.btn-outline-danger {
+    border: 2px solid #f5365c;
+    background: transparent;
+    color: #f5365c;
+}
+
+.btn-outline-info {
+    border: 2px solid #11cdef;
+    background: transparent;
+    color: #11cdef;
+}
+
+.btn-outline-warning {
+    border: 2px solid #fb6340;
+    background: transparent;
+    color: #fb6340;
+}
+
+/* Стили для контуров кнопок при наведении */
+.btn-outline-primary:hover,
+.btn-outline:hover {
+    background: #5e72e4;
+    color: white;
+}
+
+.btn-outline-secondary:hover {
+    background: #5a6268;
+    color: white;
+}
+
+.btn-outline-success:hover {
+    background: #2dce89;
+    color: white;
+}
+
+.btn-outline-danger:hover {
+    background: #f5365c;
+    color: white;
+}
+
+.btn-outline-info:hover {
+    background: #11cdef;
+    color: white;
+}
+
+.btn-outline-warning:hover {
+    background: #fb6340;
+    color: white;
+}
+
+/* Размеры кнопок */
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    min-width: 100px;
+}
+
+.btn-lg {
+    padding: 16px 32px;
+    font-size: 1.125rem;
+    min-width: 150px;
+}
+
+/* Стили для разделов и карточек */
+.section {
+    margin-bottom: 30px;
+    padding: 25px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    font-size: 1.75rem;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: var(--background-light);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+    padding: 15px 20px;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-footer {
+    padding: 15px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Улучшенные стили таблиц */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 20px;
+}
+
+table th,
+table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+table th {
+    background-color: rgba(0, 0, 0, 0.2);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+table tr:last-child td {
+    border-bottom: none;
+}
+
+table tr:hover td {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Утилиты для заполнения пустого пространства */
+.spacer-xs {
+    height: 10px;
+}
+
+.spacer-sm {
+    height: 20px;
+}
+
+.spacer-md {
+    height: 30px;
+}
+
+.spacer-lg {
+    height: 50px;
+}
+
+.spacer-xl {
+    height: 80px;
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 768px) {
+    .btn,
+    button,
+    input[type="submit"],
+    input[type="button"],
+    .btn-primary,
+    .btn-secondary,
+    .btn-success,
+    .btn-danger,
+    .btn-info,
+    .btn-warning,
+    .btn-outline-primary,
+    .btn-outline-secondary,
+    .btn-outline-success,
+    .btn-outline-danger,
+    .btn-outline-info,
+    .btn-outline-warning,
+    a.btn,
+    a.btn-action,
+    a.btn-outline {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    .section {
+        padding: 15px;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+    }
+    
+    .card-header,
+    .card-body,
+    .card-footer {
+        padding: 15px;
+    }
+    
+    table th,
+    table td {
+        padding: 10px;
+    }
+}
+
+/* Дополнительные стили для панелей навигации и списков */
+.action-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px 0;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    justify-content: center;
+}
+
+.list-group {
+    display: flex;
+    flex-direction: column;
+    padding-left: 0;
+    margin-bottom: 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.list-group-item {
+    position: relative;
+    display: block;
+    padding: 15px 20px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.list-group-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Уведомления и алерты */
+.alert {
+    position: relative;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border-left: 4px solid transparent;
+}
+
+.alert-info {
+    background-color: rgba(23, 162, 184, 0.1);
+    border-left-color: #17a2b8;
+    color: var(--text-primary);
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-left-color: #28a745;
+    color: var(--text-primary);
+}
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-left-color: #ffc107;
+    color: var(--text-primary);
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left-color: #dc3545;
+    color: var(--text-primary);
+}
+
+/* Стили для форм */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--text-primary);
+    background-color: var(--background-light);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #5e72e4;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(94, 114, 228, 0.25);
+}
+
+label {
+    display: inline-block;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+/* Полезные утилиты */
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.justify-content-center {
+    justify-content: center;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.badge {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    border-radius: 50px;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+.badge-primary {
+    background-color: #5e72e4;
+    color: white;
+}
+
+.badge-success {
+    background-color: #2dce89;
+    color: white;
+}
+
+.badge-warning {
+    background-color: #fb6340;
+    color: white;
+}
+
+.badge-danger {
+    background-color: #f5365c;
+    color: white;
+}
+
+.badge-info {
+    background-color: #11cdef;
+    color: white;
+}
+
+/* Анимации и эффекты */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* 📌 Общие стили */
+:root {
+    --primary-color: #ff00ff;
+    --secondary-color: #00ffcc;
+    --accent-color: #ff3366;
+    --background-dark: #1a1a1a;
+    --background-light: #2a2a2a;
+    --text-primary: #ffffff;
+    --text-secondary: #e0e0e0;
+    --success-color: #00ff88;
+    --danger-color: #ff3366;
+    --warning-color: #ffcc00;
+    --border-radius: 15px;
+    --transition-speed: 0.3s;
+}
+
+header {
+    background-color: var(--background-light);
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+nav {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    margin-right: 1rem;
+} 

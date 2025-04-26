@@ -1,0 +1,47 @@
+{% extends 'bustComProj/base.html' %}
+
+{% block title %}📈 Мониторинг успеваемости сотрудников{% endblock %}
+
+{% block content %}
+<h1>📊 Мониторинг успеваемости сотрудников</h1>
+
+<p>Средний балл: <strong>{{ avg_score }}</strong></p>
+<p>Максимальный балл: <strong>{{ max_score }}</strong></p>
+<p>Минимальный балл: <strong>{{ min_score }}</strong></p>
+
+<h2>📊 Гистограмма оценок</h2>
+<canvas id="scoreChart"></canvas>
+
+<h2>🎯 Распределение оценок</h2>
+<canvas id="distributionChart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx1 = document.getElementById('scoreChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: ["Средний", "Максимальный", "Минимальный"],
+            datasets: [{
+                label: "Балы",
+                data: [{{ avg_score }}, {{ max_score }}, {{ min_score }}],
+                backgroundColor: ['#00ffcc', '#ff00ff', '#ff6600']
+            }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    });
+
+    var ctx2 = document.getElementById('distributionChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'pie',
+        data: {
+            labels: [{% for score in scores %}"{{ score }}"{% if not forloop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                data: [{% for count in counts %}{{ count }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+                backgroundColor: ['#ff0000', '#ff8000', '#ffff00', '#80ff00', '#00ff00', '#00ff80', '#00ffff']
+            }]
+        },
+        options: { responsive: true }
+    });
+</script>
+{% endblock %}

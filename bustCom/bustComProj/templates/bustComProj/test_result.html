@@ -1,0 +1,80 @@
+{% extends 'bustComProj/base.html' %}
+
+{% block title %}Результаты теста{% endblock %}
+
+{% block content %}
+    <h1>Результат теста</h1>
+    <p>Вы набрали <strong>{{ score }}</strong> из <strong>{{ total }}</strong> баллов.</p>
+    <p>Процент правильных ответов: <strong>{{ percentage|floatformat:2 }}%</strong></p>
+
+    <div class="grade-info mb-4">
+        <h3>Оценка по 5-балльной шкале:</h3>
+        {% if percentage >= 90 %}
+            <h2 class="grade grade-5">5 (Отлично)</h2>
+            <p class="grade-description">Превосходное понимание материала!</p>
+        {% elif percentage >= 75 %}
+            <h2 class="grade grade-4">4 (Хорошо)</h2>
+            <p class="grade-description">Хорошее понимание материала с небольшими пробелами.</p>
+        {% elif percentage >= 60 %}
+            <h2 class="grade grade-3">3 (Удовлетворительно)</h2>
+            <p class="grade-description">Базовое понимание материала, требуется дополнительная работа.</p>
+        {% else %}
+            <h2 class="grade grade-2">2 (Неудовлетворительно)</h2>
+            <p class="grade-description">Необходимо повторное изучение материала.</p>
+        {% endif %}
+    </div>
+
+    <canvas id="testChart"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const chartCtx = document.getElementById('testChart').getContext('2d');
+        const testScore = {{ score }};
+        const totalQuestions = {{ total }};
+        const testChart = new Chart(chartCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Верные ответы', 'Ошибки'],
+                datasets: [{
+                    label: 'Результаты теста',
+                    data: [testScore, totalQuestions - testScore],
+                    backgroundColor: ['#00ffcc', '#ff0000']
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    <style>
+        .grade-info {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .grade {
+            font-size: 2em;
+            margin: 10px 0;
+        }
+        .grade-description {
+            font-style: italic;
+            color: #888;
+        }
+        .grade-5 { color: #4CAF50; }
+        .grade-4 { color: #8BC34A; }
+        .grade-3 { color: #FFC107; }
+        .grade-2 { color: #F44336; }
+    </style>
+
+    <a href="{% url 'lecture_detail' lecture.id %}" class="btn btn-primary">← Вернуться к лекции</a>
+{% endblock %}

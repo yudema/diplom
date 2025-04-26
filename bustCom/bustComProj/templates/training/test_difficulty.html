@@ -1,0 +1,33 @@
+{% extends "bustComProj/base.html" %}
+
+{% block title %}🧩 Настройка сложности тестов{% endblock %}
+
+{% block content %}
+<h2>🧩 Настроить сложность тестов</h2>
+
+<table>
+    <tr>
+        <th>Название теста</th>
+        <th>Текущая сложность</th>
+        <th>Изменить</th>
+    </tr>
+    {% for test in tests %}
+    <tr>
+        <td>{{ test.name }}</td>
+        <td>{{ test.get_difficulty_display }}</td>
+        <td>
+            <form method="post">
+                {% csrf_token %}
+                <select name="difficulty">
+                    <option value="низкая">Низкая</option>
+                    <option value="средняя">Средняя</option>
+                    <option value="высокая">Высокая</option>
+                </select>
+                <button type="submit">💾 Сохранить</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'bustComProj/base.html' %}
+{% load static %}
+
+{% block title %}Панель преподавателя{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/teacher_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="teacher-dashboard">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Панель преподавателя</h1>
+        <p class="dashboard-subtitle">Управляйте курсами и материалами</p>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- Карточка курсов -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h2 class="card-title">Мои курсы</h2>
+            </div>
+            <p class="card-description">
+                Управляйте своими курсами и создавайте новые
+            </p>
+            <div class="card-actions">
+                <a href="{% url 'add_course' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Создать курс
+                </a>
+                <a href="{% url 'courses_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-list"></i>
+                    Все курсы
+                </a>
+            </div>
+        </div>
+
+        <!-- Карточка материалов -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h2 class="card-title">Материалы</h2>
+            </div>
+            <p class="card-description">
+                Добавляйте и управляйте учебными материалами
+            </p>
+            <div class="card-actions">
+                <a href="{% url 'add_lecture_material' %}" class="btn btn-primary">
+                    <i class="fas fa-upload"></i>
+                    Добавить материал
+                </a>
+                <a href="{% url 'courses_list' %}" class="btn btn-secondary">
+                    <i class="fas fa-folder-open"></i>
+                    Все материалы
+                </a>
+            </div>
+        </div>
+
+        <!-- Карточка вопросов -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <h2 class="card-title">Вопросы</h2>
+            </div>
+            <p class="card-description">
+                Отвечайте на вопросы студентов
+            </p>
+            <div class="card-actions">
+                <a href="{% url 'answer_questions' %}" class="btn btn-primary">
+                    <i class="fas fa-comments"></i>
+                    Ответить на вопросы
+                </a>
+            </div>
+        </div>
+
+        <!-- Карточка статистики -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="card-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h2 class="card-title">Статистика</h2>
+            </div>
+            <p class="card-description">
+                Просматривайте статистику по курсам
+            </p>
+            <div class="card-actions">
+                <a href="{% url 'courses_list' %}" class="btn btn-primary">
+                    <i class="fas fa-chart-line"></i>
+                    Просмотреть отчеты
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

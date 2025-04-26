@@ -1,0 +1,6 @@
+<h2>Студенты курса {{ course.name }}</h2>
+<ul>
+    {% for enrollment in students %}
+        <li>{{ enrollment.user.username }} - {{ enrollment.status }}</li>
+    {% endfor %}
+</ul>

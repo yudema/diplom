@@ -1,0 +1,15 @@
+{% extends "bustComProj/base.html" %}
+
+{% block title %}Добавить тест{% endblock %}
+
+{% block content %}
+<h2>Добавить тест к лекции "{{ lecture.title }}"</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Создать тест</button>
+</form>
+
+<a href="{% url 'lecture_detail' lecture.id %}" class="btn">Назад</a>
+{% endblock %}

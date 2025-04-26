@@ -1,0 +1,322 @@
+{% extends 'bustComProj/base.html' %}
+{% load static %}
+
+{% block title %}Мои сертификаты{% endblock %}
+
+{% block content %}
+<div class="container fade-in">
+    <h1 class="page-title">Мои сертификаты</h1>
+    
+    <div class="certificates-grid">
+        {% if certificates %}
+            {% for certificate in certificates %}
+                <div class="certificate-card">
+                    <div class="certificate-content">
+                        <div class="certificate-header">
+                            <div class="certificate-icon">
+                                <i class="fas fa-gear fa-spin"></i>
+                            </div>
+                            <h3>{{ certificate.course.name }}</h3>
+                        </div>
+                        <div class="certificate-info">
+                            <div class="info-row">
+                                <i class="fas fa-calendar"></i>
+                                <span>{{ certificate.issued_at|date:"d.m.Y" }}</span>
+                            </div>
+                            <div class="info-row verified">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Подтвержден</span>
+                            </div>
+                        </div>
+                        <div class="certificate-actions">
+                            <button class="btn-action download">
+                                <a href="{% url 'download_certificate' certificate.id %}">
+                                    <i class="fas fa-download"></i>
+                                    <span>Скачать</span>
+                                </a>
+                            </button>
+                            <button class="btn-action view">
+                                <a href="{% url 'view_certificate' certificate.id %}">
+                                    <i class="fas fa-eye"></i>
+                                    <span>Просмотреть</span>
+                                </a>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-certificates">
+                <div class="no-cert-icon">
+                    <i class="fas fa-award"></i>
+                </div>
+                <p>У вас пока нет сертификатов. Завершите курс, чтобы получить сертификат.</p>
+                <button class="btn-action">
+                    <a href="{% url 'courses_list' %}">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Перейти к курсам</span>
+                    </a>
+                </button>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .page-title {
+        text-align: center;
+        color: #00ffff;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        text-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        font-weight: 600;
+    }
+
+    .certificates-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+
+    .certificate-card {
+        background: rgba(22, 22, 22, 0.95);
+        border: 1px solid rgba(0, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .certificate-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        padding: 1px;
+        background: linear-gradient(45deg, #00ffff20, #ff00ff20);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+    }
+
+    .certificate-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba(0, 255, 255, 0.15);
+    }
+
+    .certificate-card:hover::before {
+        background: linear-gradient(45deg, #00ffff40, #ff00ff40);
+    }
+
+    .certificate-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .certificate-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(45deg, #00ffff20, #ff00ff20);
+        border-radius: 10px;
+        font-size: 1.2rem;
+        color: #00ffff;
+    }
+
+    .certificate-icon i {
+        filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.5));
+    }
+
+    .certificate-content h3 {
+        color: #fff;
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin: 0;
+        flex-grow: 1;
+    }
+
+    .certificate-info {
+        margin-bottom: 1.5rem;
+    }
+
+    .info-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+    }
+
+    .info-row i {
+        color: #00ffff;
+        font-size: 1rem;
+        width: 20px;
+        text-align: center;
+    }
+
+    .info-row.verified {
+        color: #00ff95;
+    }
+
+    .info-row.verified i {
+        color: #00ff95;
+    }
+
+    .certificate-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-top: 1rem;
+        width: 100%;
+    }
+
+    .btn-action {
+        background: transparent;
+        border: none;
+        padding: 0;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .btn-action a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 0.5rem;
+        color: #00ffff;
+        background: rgba(0, 255, 255, 0.1);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .btn-action span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .btn-action:hover a {
+        background: rgba(0, 255, 255, 0.15);
+        border-color: rgba(0, 255, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .btn-action.download a {
+        color: #00ffff;
+        background: rgba(0, 255, 255, 0.1);
+        border-color: rgba(0, 255, 255, 0.2);
+    }
+
+    .btn-action.view a {
+        color: #ff00ff;
+        background: rgba(255, 0, 255, 0.1);
+        border-color: rgba(255, 0, 255, 0.2);
+    }
+
+    .btn-action.download:hover a {
+        background: rgba(0, 255, 255, 0.15);
+        border-color: rgba(0, 255, 255, 0.3);
+    }
+
+    .btn-action.view:hover a {
+        background: rgba(255, 0, 255, 0.15);
+        border-color: rgba(255, 0, 255, 0.3);
+    }
+
+    .no-certificates {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 3rem 2rem;
+        background: rgba(22, 22, 22, 0.95);
+        border-radius: 16px;
+        border: 1px solid rgba(0, 255, 255, 0.1);
+        position: relative;
+    }
+
+    .no-certificates::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        padding: 1px;
+        background: linear-gradient(45deg, #00ffff20, #ff00ff20);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+    }
+
+    .no-cert-icon {
+        font-size: 3rem;
+        color: #00ffff;
+        margin-bottom: 1.5rem;
+        filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.5));
+    }
+
+    .no-certificates p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .no-certificates .btn-action {
+        width: auto;
+        display: inline-block;
+    }
+
+    .no-certificates .btn-action a {
+        padding: 0.75rem 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .page-title {
+            font-size: 2rem;
+            margin: 1rem 0 1.5rem;
+        }
+
+        .certificates-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            padding: 0.5rem;
+        }
+
+        .certificate-card {
+            padding: 1rem;
+        }
+
+        .certificate-actions {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+
+        .btn-action a {
+            padding: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .no-certificates {
+            padding: 2rem 1rem;
+        }
+    }
+</style>
+{% endblock %} 

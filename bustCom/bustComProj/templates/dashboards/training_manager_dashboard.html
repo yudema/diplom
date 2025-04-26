@@ -1,0 +1,9 @@
+{% extends "dashboards/dashboard_base.html" %}
+
+{% block title %}Панель менеджера по обучению{% endblock %}
+
+{% block extra_links %}
+<li><a href="{% url 'create_training_plan' %}">📋 Создать план обучения</a></li>
+<li><a href="{% url 'review_requests' %}">📑 Рассмотреть заявки</a></li>
+<li><a href="{% url 'test_difficulty' %}">🧩 Настроить сложность тестов</a></li>
+{% endblock %}

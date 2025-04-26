@@ -1,0 +1,12 @@
+{% extends "dashboards/dashboard_base.html" %}
+
+{% block title %}Отзывы студентов{% endblock %}
+
+{% block content %}
+<h2>Отзывы студентов</h2>
+<ul>
+    {% for feedback in feedbacks %}
+        <li><strong>{{ feedback.user.username }}</strong>: {{ feedback.text }} ({{ feedback.created_at }})</li>
+    {% endfor %}
+</ul>
+{% endblock %}

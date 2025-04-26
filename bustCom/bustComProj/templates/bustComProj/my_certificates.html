@@ -1,0 +1,16 @@
+{% extends 'bustComProj/base.html' %}
+
+{% block title %}Мои сертификаты{% endblock %}
+
+{% block content %}
+    <h1>Мои сертификаты</h1>
+    {% if certificates %}
+        <ul>
+            {% for cert in certificates %}
+                <li>🎓 {{ cert.course.name }} (Дата выдачи: {{ cert.issued_at }})</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>У вас пока нет сертификатов.</p>
+    {% endif %}
+{% endblock %}

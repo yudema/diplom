@@ -1,0 +1,348 @@
+{% extends 'bustComProj/base.html' %}
+{% load static %}
+
+{% block title %}{{ course.name }}{% endblock %}
+
+{% block content %}
+<div class="course-detail-container">
+    <div class="course-header">
+        <h1 class="course-title">{{ course.name }}</h1>
+        <div class="course-meta">
+            <div class="meta-item">
+                <i class="fas fa-clock"></i>
+                <span>{{ course.duration }} часов</span>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-user-graduate"></i>
+                <span>{{ course.teacher.get_full_name }}</span>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-info-circle"></i>
+                <span>{{ course.get_status_display }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="course-description">
+        <p>{{ course.description }}</p>
+    </div>
+
+    <div class="course-actions">
+        {% if user.is_authenticated %}
+            {% if is_enrolled %}
+                <div class="enrolled-status">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Вы записаны на этот курс</span>
+                </div>
+                <a href="{% url 'course_lectures' course.id %}" class="btn-action btn-continue">
+                    <i class="fas fa-play"></i>
+                    <span>Продолжить обучение</span>
+                </a>
+            {% else %}
+                <a href="{% url 'enroll_course' course.id %}" class="btn-action btn-enroll">
+                    <i class="fas fa-plus"></i>
+                    <span>Записаться на курс</span>
+                </a>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'login' %}" class="btn-action btn-enroll">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Войти для записи</span>
+            </a>
+        {% endif %}
+    </div>
+
+    {% if lectures %}
+        <div class="lectures-section">
+            <h2 class="section-title">Лекции курса</h2>
+            <div class="lectures-list">
+                {% for lecture in lectures %}
+                    <div class="lecture-item">
+                        <div class="lecture-info">
+                            <i class="fas fa-book-reader"></i>
+                            <span class="lecture-title">{{ lecture.title }}</span>
+                        </div>
+                        {% if is_enrolled %}
+                            <a href="{% url 'lecture_detail' lecture.id %}" class="btn-action btn-view">
+                                <i class="fas fa-eye"></i>
+                                <span>Смотреть</span>
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div class="no-lectures">
+            <div class="no-lectures-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <p>Пока нет лекций</p>
+        </div>
+    {% endif %}
+
+    {% if user.profile.role == "teacher" or user.profile.role == "admin" %}
+        <div class="admin-actions">
+            <a href="{% url 'edit_course' course.id %}" class="btn-action btn-edit">
+                <i class="fas fa-edit"></i>
+                <span>Редактировать</span>
+            </a>
+            <a href="{% url 'add_lecture' course.id %}" class="btn-action btn-add">
+                <i class="fas fa-plus"></i>
+                <span>Добавить лекцию</span>
+            </a>
+            <a href="{% url 'delete_course' course.id %}" class="btn-action btn-danger">
+                <i class="fas fa-trash"></i>
+                <span>Удалить</span>
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .course-detail-container {
+        padding: clamp(1rem, 3vw, 2rem);
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .course-header {
+        margin-bottom: 2rem;
+    }
+
+    .course-title {
+        font-size: clamp(1.5rem, 5vw, 2.5rem);
+        color: #fff;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .course-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+    }
+
+    .meta-item i {
+        color: #00ffff;
+    }
+
+    .course-description {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: clamp(0.9rem, 2vw, 1rem);
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    .course-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .enrolled-status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: rgba(0, 255, 149, 0.1);
+        border: 1px solid rgba(0, 255, 149, 0.2);
+        border-radius: 8px;
+        color: #00ff95;
+        font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+    }
+
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-continue {
+        color: #00ff95;
+        background: rgba(0, 255, 149, 0.1);
+        border: 1px solid rgba(0, 255, 149, 0.2);
+    }
+
+    .btn-continue:hover {
+        background: rgba(0, 255, 149, 0.15);
+        border-color: rgba(0, 255, 149, 0.3);
+    }
+
+    .btn-enroll {
+        color: #00ffff;
+        background: rgba(0, 255, 255, 0.1);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+    }
+
+    .btn-enroll:hover {
+        background: rgba(0, 255, 255, 0.15);
+        border-color: rgba(0, 255, 255, 0.3);
+    }
+
+    .btn-view {
+        color: #ff00ff;
+        background: rgba(255, 0, 255, 0.1);
+        border: 1px solid rgba(255, 0, 255, 0.2);
+    }
+
+    .btn-view:hover {
+        background: rgba(255, 0, 255, 0.15);
+        border-color: rgba(255, 0, 255, 0.3);
+    }
+
+    .lectures-section {
+        margin-top: 3rem;
+    }
+
+    .section-title {
+        font-size: clamp(1.25rem, 4vw, 1.75rem);
+        color: #fff;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+    }
+
+    .lectures-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .lecture-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        background: rgba(22, 22, 22, 0.95);
+        border: 1px solid rgba(0, 255, 255, 0.1);
+        border-radius: 8px;
+        gap: 1rem;
+    }
+
+    .lecture-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .lecture-info i {
+        color: #00ffff;
+    }
+
+    .lecture-title {
+        font-size: clamp(0.9rem, 2vw, 1rem);
+    }
+
+    .no-lectures {
+        text-align: center;
+        padding: 3rem 1rem;
+        background: rgba(22, 22, 22, 0.95);
+        border: 1px solid rgba(0, 255, 255, 0.1);
+        border-radius: 12px;
+    }
+
+    .no-lectures-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(45deg, #00ffff20, #ff00ff20);
+        border-radius: 12px;
+    }
+
+    .no-lectures-icon i {
+        font-size: 1.5rem;
+        color: #00ffff;
+    }
+
+    .no-lectures p {
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0;
+    }
+
+    .admin-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-edit {
+        color: #ffaa00;
+        background: rgba(255, 170, 0, 0.1);
+        border: 1px solid rgba(255, 170, 0, 0.2);
+    }
+
+    .btn-edit:hover {
+        background: rgba(255, 170, 0, 0.15);
+        border-color: rgba(255, 170, 0, 0.3);
+    }
+
+    .btn-add {
+        color: #00ffff;
+        background: rgba(0, 255, 255, 0.1);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+    }
+
+    .btn-add:hover {
+        background: rgba(0, 255, 255, 0.15);
+        border-color: rgba(0, 255, 255, 0.3);
+    }
+
+    .btn-danger {
+        color: #ff4444;
+        background: rgba(255, 68, 68, 0.1);
+        border: 1px solid rgba(255, 68, 68, 0.2);
+    }
+
+    .btn-danger:hover {
+        background: rgba(255, 68, 68, 0.15);
+        border-color: rgba(255, 68, 68, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .course-meta {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .course-actions {
+            flex-direction: column;
+        }
+
+        .btn-action {
+            width: 100%;
+        }
+
+        .lecture-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .lecture-item .btn-action {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'bustComProj/base.html' %}
+
+{% block title %}Лекции - {{ course.name }}{% endblock %}
+
+{% block content %}
+    <h1>Лекции курса: {{ course.name }}</h1>
+    <ul>
+        {% for lecture in lectures %}
+            <li>
+                <a href="{% url 'lecture_detail' lecture.id %}" class="btn-link">
+                    <i class="fas fa-book"></i>
+                    {{ lecture.title }}
+                </a>
+                {% if lecture.test_set.exists %}
+                    <a href="{% url 'lecture_test' lecture.id lecture.test_set.first.id %}" class="btn-link btn-test">
+                        <i class="fas fa-tasks"></i>
+                        Тест
+                    </a>
+                {% endif %}
+            </li>
+        {% empty %}
+            <p>Пока нет лекций.</p>
+        {% endfor %}
+    </ul>
+
+    {% if user.profile.role == "teacher" or user.profile.role == "admin" %}
+        <a href="{% url 'add_lecture' course.id %}" class="btn-link">
+            <i class="fas fa-plus"></i>
+            Добавить лекцию
+        </a>
+    {% endif %}
+
+    <a href="{% url 'course_detail' course.id %}" class="btn-link btn-back">
+        <i class="fas fa-arrow-left"></i>
+        Назад к курсу
+    </a>
+
+<style>
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    li {
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .btn-link {
+        margin: 0.5rem 0;
+    }
+</style>
+{% endblock %}

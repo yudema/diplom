@@ -1,0 +1,13 @@
+{% extends "bustComProj/base.html" %}
+
+{% block title %} Добавить в {{ table_name }} {% endblock %}
+
+{% block content %}
+<h1>Добавить в {{ table_name }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+</form>
+<a href="{% url 'manage_table' table_name=table_name %}">⬅ Назад</a>
+{% endblock %}

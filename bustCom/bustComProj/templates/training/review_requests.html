@@ -1,0 +1,34 @@
+{% extends "bustComProj/base.html" %}
+
+{% block title %}📑 Рассмотрение заявок{% endblock %}
+
+{% block content %}
+<h2>📑 Заявки на обучение</h2>
+
+<table>
+    <tr>
+        <th>Пользователь</th>
+        <th>Курс</th>
+        <th>Причина</th>
+        <th>Статус</th>
+        <th>Действие</th>
+    </tr>
+    {% for request in requests %}
+    <tr>
+        <td>{{ request.user.username }}</td>
+        <td>{{ request.course.name }}</td>
+        <td>{{ request.reason }}</td>
+        <td>{{ request.get_status_display }}</td>
+        <td>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="request_id" value="{{ request.id }}">
+                <button name="action" value="approve">✅ Одобрить</button>
+                <button name="action" value="reject">❌ Отклонить</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

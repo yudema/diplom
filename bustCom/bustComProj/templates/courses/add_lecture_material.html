@@ -1,0 +1,252 @@
+{% extends 'bustComProj/base.html' %}
+
+{% block title %}Добавить материал{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <h1 class="page-title">Добавить материал к лекции</h1>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if lectures %}
+            <form method="post" class="form">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="lecture">Выберите лекцию</label>
+                    <select name="lecture" id="lecture" class="form-control" required>
+                        <option value="">-- Выберите лекцию --</option>
+                        {% for lecture in lectures %}
+                            <option value="{{ lecture.id }}">{{ lecture.course.title }} - {{ lecture.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="resource_type">Тип материала</label>
+                    <select name="resource_type" id="resource_type" class="form-control" required>
+                        <option value="">-- Выберите тип --</option>
+                        <option value="file">Файл</option>
+                        <option value="video">Видео</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="resource_path">Ссылка на материал</label>
+                    <input type="text" name="resource_path" id="resource_path" class="form-control" 
+                           placeholder="Введите URL файла или видео" required>
+                    <small class="help-text">Укажите прямую ссылку на файл или видео</small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-upload"></i> Добавить материал
+                    </button>
+                    <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Отмена
+                    </a>
+                </div>
+            </form>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-info-circle"></i>
+                <p>У вас пока нет лекций. Сначала создайте курс и добавьте в него лекции.</p>
+                <div class="empty-state-actions">
+                    <a href="{% url 'add_course' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Создать курс
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .form-container {
+        background: rgba(22, 22, 22, 0.95);
+        border: 1px solid rgba(0, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2rem;
+    }
+
+    .page-title {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        color: #00ffff;
+        margin-bottom: 2rem;
+        text-align: center;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+
+    .form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-group label {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        border-radius: 6px;
+        padding: 0.75rem;
+        color: #fff;
+        font-size: 0.9rem;
+        width: 100%;
+        transition: all 0.2s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: rgba(0, 255, 255, 0.5);
+        box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.1);
+    }
+
+    .form-control option {
+        background: #1a1a1a;
+        color: #fff;
+    }
+
+    .help-text {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.8rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn i {
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background: rgba(0, 255, 255, 0.1);
+        color: #00ffff;
+        border: 1px solid rgba(0, 255, 255, 0.2);
+    }
+
+    .btn-primary:hover {
+        background: rgba(0, 255, 255, 0.15);
+        border-color: rgba(0, 255, 255, 0.3);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .messages {
+        margin-bottom: 1.5rem;
+    }
+
+    .message {
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+
+    .message.success {
+        background: rgba(0, 255, 149, 0.1);
+        border: 1px solid rgba(0, 255, 149, 0.2);
+        color: #00ff95;
+    }
+
+    .message.error {
+        background: rgba(255, 68, 68, 0.1);
+        border: 1px solid rgba(255, 68, 68, 0.2);
+        color: #ff4444;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .empty-state i {
+        font-size: 2rem;
+        color: #00ffff;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-state-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+        }
+
+        .form-container {
+            padding: 1.5rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .empty-state-actions {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %} 

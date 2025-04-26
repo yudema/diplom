@@ -1,0 +1,142 @@
+{% extends 'bustComProj/base.html' %}
+
+{% block title %}Назначение курсов{% endblock %}
+
+{% block content %}
+<div class="container fade-in">
+    <div class="section">
+        <h1 class="section-title">Назначение курсов</h1>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0"><i class="fas fa-user-plus me-2"></i>Назначить курс сотруднику</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group mb-3">
+                                <label for="employee" class="form-label">Выберите сотрудника</label>
+                                <select name="employee" id="employee" class="form-control" required>
+                                    <option value="">-- Выберите сотрудника --</option>
+                                    {% for employee in employees %}
+                                    <option value="{{ employee.id }}">{{ employee.get_full_name|default:employee.username }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="course" class="form-label">Выберите курс</label>
+                                <select name="course" id="course" class="form-control" required>
+                                    <option value="">-- Выберите курс --</option>
+                                    {% for course in courses %}
+                                    <option value="{{ course.id }}">{{ course.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i> Назначить курс
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h2 class="mb-0"><i class="fas fa-tasks me-2"></i>Текущие назначения</h2>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Сотрудник</th>
+                                        <th>Курс</th>
+                                        <th>Дата назначения</th>
+                                        <th>Статус</th>
+                                        <th>Действия</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for enrollment in enrollments %}
+                                    <tr>
+                                        <td>{{ enrollment.user.get_full_name|default:enrollment.user.username }}</td>
+                                        <td>{{ enrollment.course.title }}</td>
+                                        <td>{{ enrollment.enrolled_at|date:"d.m.Y" }}</td>
+                                        <td>
+                                            <form method="post" id="status-form-{{ enrollment.id }}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="update_status">
+                                                <input type="hidden" name="enrollment_id" value="{{ enrollment.id }}">
+                                                <select name="status" class="form-control form-control-sm" onchange="document.getElementById('status-form-{{ enrollment.id }}').submit()">
+                                                    <option value="в процессе" {% if enrollment.status == 'в процессе' %}selected{% endif %}>В процессе</option>
+                                                    <option value="завершён" {% if enrollment.status == 'завершён' %}selected{% endif %}>Завершён</option>
+                                                    <option value="отчислен" {% if enrollment.status == 'отчислен' %}selected{% endif %}>Отчислен</option>
+                                                </select>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <form method="post" style="display: inline;">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="enrollment_id" value="{{ enrollment.id }}">
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash me-1"></i> Удалить
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center">Нет активных назначений</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h2 class="mb-0"><i class="fas fa-history me-2"></i>Последние активности</h2>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+                            {% for activity in recent_activities %}
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            {% if activity.action == 'запись' %}
+                                                <span class="badge badge-primary">Назначение</span>
+                                            {% elif activity.action == 'отчислен' %}
+                                                <span class="badge badge-danger">Отчисление</span>
+                                            {% elif activity.action == 'завершение' %}
+                                                <span class="badge badge-success">Завершение</span>
+                                            {% else %}
+                                                <span class="badge badge-info">{{ activity.action }}</span>
+                                            {% endif %}
+                                            <span>{{ activity.user.get_full_name|default:activity.user.username }} - {{ activity.course.title }}</span>
+                                        </div>
+                                        <small>{{ activity.log_time|date:"d.m.Y H:i" }}</small>
+                                    </div>
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item">
+                                    <div class="alert alert-info mb-0">
+                                        <p class="mb-0">Пока нет активностей в системе.</p>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

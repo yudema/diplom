@@ -1,0 +1,174 @@
+[
+    {
+        "model": "bustComProj.course",
+        "pk": 1,
+        "fields": {
+            "title": "Основы Python разработки",
+            "description": "Базовый курс по Python для начинающих разработчиков. Изучение основных концепций языка, работа с данными, функции и ООП.",
+            "level": "beginner",
+            "duration": 30,
+            "created_at": "2024-04-25",
+            "status": "active"
+        }
+    },
+    {
+        "model": "bustComProj.course",
+        "pk": 2,
+        "fields": {
+            "title": "JavaScript для фронтенд-разработчиков",
+            "description": "Углубленный курс по JavaScript. Изучение современных возможностей языка, работа с DOM, асинхронное программирование.",
+            "level": "intermediate",
+            "duration": 45,
+            "created_at": "2024-04-25",
+            "status": "active"
+        }
+    },
+    {
+        "model": "bustComProj.course",
+        "pk": 3,
+        "fields": {
+            "title": "DevOps практики и инструменты",
+            "description": "Изучение современных практик DevOps, работа с Docker, Kubernetes, CI/CD pipelines.",
+            "level": "advanced",
+            "duration": 60,
+            "created_at": "2024-04-25",
+            "status": "active"
+        }
+    },
+    {
+        "model": "bustComProj.course",
+        "pk": 4,
+        "fields": {
+            "title": "Управление IT проектами",
+            "description": "Методологии управления проектами, Agile, Scrum, инструменты для управления проектами.",
+            "level": "intermediate",
+            "duration": 40,
+            "created_at": "2024-04-25",
+            "status": "active"
+        }
+    },
+    {
+        "model": "bustComProj.course",
+        "pk": 5,
+        "fields": {
+            "title": "Основы SQL и работа с базами данных",
+            "description": "Изучение SQL, проектирование баз данных, оптимизация запросов, работа с PostgreSQL.",
+            "level": "beginner",
+            "duration": 35,
+            "created_at": "2024-04-25",
+            "status": "active"
+        }
+    },
+    {
+        "model": "bustComProj.lecture",
+        "pk": 1,
+        "fields": {
+            "course": 1,
+            "title": "Введение в Python",
+            "content": "Основы синтаксиса Python, переменные, типы данных",
+            "order_num": 1
+        }
+    },
+    {
+        "model": "bustComProj.lecture",
+        "pk": 2,
+        "fields": {
+            "course": 1,
+            "title": "Функции и модули",
+            "content": "Создание и использование функций, работа с модулями",
+            "order_num": 2
+        }
+    },
+    {
+        "model": "bustComProj.lecture",
+        "pk": 3,
+        "fields": {
+            "course": 2,
+            "title": "Основы JavaScript",
+            "content": "Синтаксис JavaScript, переменные, функции",
+            "order_num": 1
+        }
+    },
+    {
+        "model": "bustComProj.lecture",
+        "pk": 4,
+        "fields": {
+            "course": 2,
+            "title": "Работа с DOM",
+            "content": "Манипуляция DOM-элементами, обработка событий",
+            "order_num": 2
+        }
+    },
+    {
+        "model": "bustComProj.test",
+        "pk": 1,
+        "fields": {
+            "lecture": 1,
+            "title": "Тест по основам Python",
+            "description": "Проверка знаний базового синтаксиса Python"
+        }
+    },
+    {
+        "model": "bustComProj.test",
+        "pk": 2,
+        "fields": {
+            "lecture": 2,
+            "title": "Тест по функциям Python",
+            "description": "Проверка понимания функций и модулей"
+        }
+    },
+    {
+        "model": "bustComProj.question",
+        "pk": 1,
+        "fields": {
+            "test": 1,
+            "question_text": "Какой тип данных используется для целых чисел в Python?",
+            "points": 1
+        }
+    },
+    {
+        "model": "bustComProj.question",
+        "pk": 2,
+        "fields": {
+            "test": 1,
+            "question_text": "Как объявить список в Python?",
+            "points": 1
+        }
+    },
+    {
+        "model": "bustComProj.answer",
+        "pk": 1,
+        "fields": {
+            "question": 1,
+            "answer_text": "int",
+            "is_correct": true
+        }
+    },
+    {
+        "model": "bustComProj.answer",
+        "pk": 2,
+        "fields": {
+            "question": 1,
+            "answer_text": "string",
+            "is_correct": false
+        }
+    },
+    {
+        "model": "bustComProj.answer",
+        "pk": 3,
+        "fields": {
+            "question": 2,
+            "answer_text": "[]",
+            "is_correct": true
+        }
+    },
+    {
+        "model": "bustComProj.answer",
+        "pk": 4,
+        "fields": {
+            "question": 2,
+            "answer_text": "()",
+            "is_correct": false
+        }
+    }
+] 

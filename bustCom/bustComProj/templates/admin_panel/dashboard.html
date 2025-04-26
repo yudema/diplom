@@ -1,0 +1,186 @@
+{% extends "bustComProj/base.html" %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <h1 class="dashboard-title">Панель администратора</h1>
+
+    <div class="admin-actions">
+        <a href="{% url 'download_backup' %}" class="backup-button">
+            <i class="fas fa-download"></i>
+            Скачать бэкап базы данных
+        </a>
+        <a href="{% url 'restore_backup' %}" class="backup-button restore">
+            <i class="fas fa-upload"></i>
+            Восстановить из бэкапа
+        </a>
+    </div>
+
+    <div class="admin-grid">
+        {% for table_key, table_name in tables.items %}
+            <a href="{% url 'manage_table' table_key %}" class="admin-card">
+                <div class="card-icon">
+                    {% if table_key == 'users' %}
+                        <i class="fas fa-users"></i>
+                    {% elif table_key == 'roles' %}
+                        <i class="fas fa-user-tag"></i>
+                    {% elif table_key == 'courses' %}
+                        <i class="fas fa-graduation-cap"></i>
+                    {% elif table_key == 'lectures' %}
+                        <i class="fas fa-book"></i>
+                    {% elif table_key == 'enrollments' %}
+                        <i class="fas fa-user-graduate"></i>
+                    {% elif table_key == 'tests' %}
+                        <i class="fas fa-tasks"></i>
+                    {% elif table_key == 'questions' %}
+                        <i class="fas fa-question-circle"></i>
+                    {% elif table_key == 'answers' %}
+                        <i class="fas fa-check-circle"></i>
+                    {% elif table_key == 'attempts' %}
+                        <i class="fas fa-clock"></i>
+                    {% elif table_key == 'certificates' %}
+                        <i class="fas fa-certificate"></i>
+                    {% else %}
+                        <i class="fas fa-table"></i>
+                    {% endif %}
+                </div>
+                <h3 class="card-title">{{ table_name }}</h3>
+            </a>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .admin-dashboard {
+        padding: 2rem;
+    }
+
+    .dashboard-title {
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        color: var(--primary-color);
+        margin-bottom: 2rem;
+        text-align: center;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+
+    .admin-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+
+    .backup-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--primary-color);
+        color: var(--background);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .backup-button:hover {
+        background: var(--primary-light);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+    }
+
+    .backup-button.restore {
+        background: #FF5722;
+    }
+
+    .backup-button.restore:hover {
+        background: #F4511E;
+        box-shadow: 0 4px 12px rgba(255, 87, 34, 0.2);
+    }
+
+    .backup-button i {
+        font-size: 1.2rem;
+    }
+
+    .admin-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .admin-card {
+        background: rgba(22, 22, 22, 0.95);
+        border: 1px solid rgba(0, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .admin-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--primary-color);
+        box-shadow: 0 5px 15px rgba(0, 255, 255, 0.1);
+    }
+
+    .card-icon {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .card-icon i {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        transition: all 0.3s ease;
+    }
+
+    .admin-card:hover .card-icon {
+        background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2));
+        transform: scale(1.1);
+    }
+
+    .admin-card:hover .card-icon i {
+        transform: scale(1.1);
+        color: var(--primary-light);
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+        color: var(--text-primary);
+        text-align: center;
+        margin: 0;
+    }
+
+    @media (max-width: 768px) {
+        .admin-dashboard {
+            padding: 1rem;
+        }
+
+        .admin-grid {
+            gap: 1rem;
+        }
+
+        .admin-card {
+            padding: 1rem;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+        }
+
+        .card-icon i {
+            font-size: 1.25rem;
+        }
+    }
+</style>
+{% endblock %}

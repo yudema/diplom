@@ -1,0 +1,110 @@
+{% extends "bustComProj/base.html" %}
+{% load static %}
+
+{% block title %}Панель HR-менеджера{% endblock %}
+
+{% block content %}
+<div class="container fade-in">
+    <div class="section">
+        <div class="welcome-section mb-4">
+            <h1 class="section-title">Панель управления HR-менеджера</h1>
+            <p class="lead">Добро пожаловать в панель управления HR-менеджера. Отсюда вы можете управлять заявками на обучение, назначать курсы сотрудникам и анализировать их результаты.</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <i class="fas fa-users mr-2"></i> Сотрудники
+                    </div>
+                    <div class="card-body">
+                        <p>Управление сотрудниками, просмотр профилей и статистики обучения.</p>
+                        <a href="/dashboard/hr/manage_employees/" class="btn btn-outline-primary mt-2">Управление сотрудниками</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <i class="fas fa-graduation-cap mr-2"></i> Курсы
+                    </div>
+                    <div class="card-body">
+                        <p>Просмотр доступных курсов и назначение их сотрудникам.</p>
+                        <a href="{% url 'assign_courses' %}" class="btn btn-outline-success mt-2">Назначить курсы</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <i class="fas fa-chart-line mr-2"></i> Статистика
+                    </div>
+                    <div class="card-body">
+                        <p>Анализ результатов обучения и отслеживание прогресса сотрудников.</p>
+                        <a href="{% url 'track_performance' %}" class="btn btn-outline-info mt-2">Просмотр статистики</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="spacer-md"></div>
+        
+        <div class="section">
+            <h2 class="section-title">Быстрые действия</h2>
+            <div class="action-links">
+                <a href="{% url 'assign_courses' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-tasks me-2"></i>Назначить курсы
+                </a>
+                <a href="{% url 'track_performance' %}" class="btn btn-success btn-lg">
+                    <i class="fas fa-chart-line me-2"></i>Отслеживание результатов
+                </a>
+                <a href="{% url 'hr_view_requests' %}" class="btn btn-info btn-lg">
+                    <i class="fas fa-clipboard-list me-2"></i>Просмотр заявок
+                </a>
+            </div>
+        </div>
+        
+        <div class="spacer-md"></div>
+        
+        <div class="section">
+            <h2 class="section-title">Последние активности</h2>
+            <div class="card">
+                <div class="card-body">
+                    {% if recent_activities %}
+                        <ul class="list-group">
+                            {% for activity in recent_activities %}
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            {% if activity.action == 'запись' %}
+                                                <span class="badge badge-primary">Новый курс</span>
+                                                <span>{{ activity.user.get_full_name|default:activity.user.username }} записан(а) на курс "{{ activity.course.title }}"</span>
+                                            {% elif activity.action == 'отчислен' %}
+                                                <span class="badge badge-danger">Отчисление</span>
+                                                <span>{{ activity.user.get_full_name|default:activity.user.username }} отчислен(а) с курса "{{ activity.course.title }}"</span>
+                                            {% elif activity.action == 'завершение' %}
+                                                <span class="badge badge-success">Курс завершен</span>
+                                                <span>{{ activity.user.get_full_name|default:activity.user.username }} завершил(а) курс "{{ activity.course.title }}"</span>
+                                            {% elif activity.action == 'прогресс' %}
+                                                <span class="badge badge-info">Прогресс</span>
+                                                <span>{{ activity.user.get_full_name|default:activity.user.username }} продвинулся в курсе "{{ activity.course.title }}"</span>
+                                            {% endif %}
+                                        </div>
+                                        <small>{{ activity.log_time|timesince }} назад</small>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> Пока нет записей об активностях в системе. Действия пользователей будут отображаться здесь.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

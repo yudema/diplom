@@ -1,0 +1,319 @@
+{% extends "bustComProj/base.html" %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="admin-panel">
+    <div class="panel-header">
+        <h1 class="panel-title">{{ table_name }}</h1>
+        <div class="panel-actions">
+            <a href="{% url 'add_object' table_name %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i>
+                Добавить запись
+            </a>
+            {% if table_name == 'users' %}
+            <button id="toggle-view" class="btn btn-secondary">
+                <i class="fas fa-compress"></i> Компактный вид
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="table-container {% if table_name == 'users' %}table-users{% endif %}">
+        <table {% if table_name == 'users' %}class="compact-view"{% endif %}>
+            <thead>
+                <tr>
+                    {% for field in fields %}
+                        <th>{{ field|replace_underscores }}</th>
+                    {% endfor %}
+                    <th class="actions-column">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in objects %}
+                    <tr>
+                        {% for field in fields %}
+                            <td data-label="{{ field|replace_underscores }}">
+                                {% if field == 'profile__role' %}
+                                    {% if obj.profile %}{{ obj.profile.role }}{% else %}—{% endif %}
+                                {% elif field == 'last_login' %}
+                                    {{ obj|getattr_custom:field|default:"—"|date:"d.m.Y H:i"|default:"—" }}
+                                {% elif field == 'is_active' %}
+                                    {% if obj.is_active %}<span class="status-active">Активен</span>{% else %}<span class="status-inactive">Не активен</span>{% endif %}
+                                {% else %}
+                                    {{ obj|getattr_custom:field|default:"—"|truncatechars:50 }}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                        <td class="actions-cell" data-label="Действия">
+                            <div class="actions-wrapper">
+                                <a href="{% url 'edit_object' table_name obj.id %}" class="btn btn-secondary btn-sm">
+                                    <i class="fas fa-edit"></i>
+                                    <span class="btn-text">Редактировать</span>
+                                </a>
+                                <a href="{% url 'delete_object' table_name obj.id %}" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                    <span class="btn-text">Удалить</span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .admin-panel {
+        background: var(--background-light);
+        border-radius: var(--border-radius);
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-lg);
+        flex-wrap: wrap;
+        gap: var(--spacing-md);
+    }
+    
+    .panel-actions {
+        display: flex;
+        gap: var(--spacing-sm);
+    }
+
+    .panel-title {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        margin: 0;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        background: var(--background-dark);
+        border-radius: var(--border-radius);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .table-users {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    th {
+        background: rgba(0, 0, 0, 0.2);
+        padding: var(--spacing-sm);
+        text-align: left;
+        color: var(--primary-color);
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: var(--spacing-sm);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    tr:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .status-active {
+        color: #4CAF50;
+        font-weight: bold;
+    }
+    
+    .status-inactive {
+        color: #F44336;
+        font-weight: bold;
+    }
+
+    .actions-column {
+        width: 200px;
+    }
+
+    .actions-cell {
+        width: 200px;
+    }
+
+    .actions-wrapper {
+        display: flex;
+        gap: var(--spacing-xs);
+        flex-wrap: wrap;
+    }
+
+    .btn-sm {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: 0.8rem;
+    }
+
+    .btn-danger {
+        background-color: #ff4444;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #cc0000;
+    }
+    
+    /* Компактный вид */
+    .compact-view th, .compact-view td {
+        padding: 3px 6px;
+        font-size: 0.8rem;
+    }
+    
+    .compact-view .actions-cell {
+        width: 160px;
+        min-width: 160px;
+    }
+    
+    .compact-view .btn-sm {
+        padding: 2px 6px;
+        font-size: 0.7rem;
+        margin: 1px;
+    }
+    
+    /* Устанавливаем более узкие столбцы для некоторых полей */
+    th:nth-child(1), td:nth-child(1) {
+        width: 40px;
+        min-width: 40px;
+    }
+    
+    th:contains("Last Login"), td:nth-last-child(2) {
+        width: 110px;
+    }
+    
+    /* Установить минимальную ширину для названий пользователей */
+    th:contains("Username"), td:nth-child(2) {
+        min-width: 80px;
+    }
+    
+    /* Email должен быть достаточно широким для отображения адресов */
+    th:contains("Email"), td:nth-child(3) {
+        min-width: 150px;
+    }
+    
+    /* Для роли нужно меньше места */
+    th:contains("Role"), td:nth-child(6) {
+        width: 80px;
+    }
+
+    @media (max-width: 768px) {
+        .panel-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .panel-actions {
+            justify-content: center;
+        }
+
+        .panel-title {
+            text-align: center;
+        }
+
+        table {
+            display: block;
+        }
+
+        thead {
+            display: none;
+        }
+
+        tbody {
+            display: block;
+        }
+
+        tr {
+            display: block;
+            margin-bottom: var(--spacing-md);
+            background: var(--background-light);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-sm);
+        }
+
+        td {
+            display: block;
+            text-align: right;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border: none;
+            position: relative;
+            padding-left: 50%;
+        }
+
+        td::before {
+            content: attr(data-label);
+            position: absolute;
+            left: var(--spacing-sm);
+            width: 45%;
+            text-align: left;
+            color: var(--text-secondary);
+        }
+
+        .actions-cell {
+            width: 100%;
+            text-align: center;
+            padding-left: var(--spacing-sm);
+        }
+
+        .actions-wrapper {
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .btn-text {
+            display: none;
+        }
+
+        .btn-sm {
+            padding: var(--spacing-xs);
+        }
+
+        .actions-wrapper {
+            gap: var(--spacing-md);
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleButton = document.getElementById('toggle-view');
+        if (toggleButton) {
+            // Для таблицы пользователей компактный вид по умолчанию
+            if (document.querySelector('table').classList.contains('compact-view')) {
+                toggleButton.innerHTML = '<i class="fas fa-expand"></i> Полный вид';
+            }
+            
+            toggleButton.addEventListener('click', function() {
+                const table = document.querySelector('table');
+                table.classList.toggle('compact-view');
+                
+                if (table.classList.contains('compact-view')) {
+                    toggleButton.innerHTML = '<i class="fas fa-expand"></i> Полный вид';
+                } else {
+                    toggleButton.innerHTML = '<i class="fas fa-compress"></i> Компактный вид';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

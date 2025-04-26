@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BustCom{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/enhanced.css">
+    <link rel="stylesheet" href="/static/css/theme.css">
+    <style>
+        :root {
+            --primary-color: #00ffff;
+            --primary-dark: #00cccc;
+            --primary-light: #80ffff;
+            --secondary-color: #ff00ff;
+            --secondary-dark: #cc00cc;
+            --secondary-light: #ff80ff;
+            --background-dark: #121212;
+            --background-light: #1e1e1e;
+            --background-lighter: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-tertiary: rgba(255, 255, 255, 0.5);
+            --danger-color: #ff4444;
+            --danger-dark: #cc0000;
+            --success-color: #00ff00;
+            --success-dark: #00cc00;
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --max-width: 1200px;
+            --header-height: 60px;
+            --footer-height: 60px;
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--background-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #root {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--background-light);
+            height: var(--header-height);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            padding: 0 var(--spacing-md);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-right: var(--spacing-lg);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-left: auto;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--text-primary);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: var(--max-width);
+            margin: var(--header-height) auto 0;
+            padding: var(--spacing-lg) var(--spacing-md);
+            min-height: calc(100vh - var(--header-height) - var(--footer-height));
+        }
+
+        footer {
+            background-color: var(--background-light);
+            height: var(--footer-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-md);
+            margin-top: auto;
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Адаптивные стили */
+        @media (max-width: 768px) {
+            header {
+                padding: 0 var(--spacing-sm);
+            }
+
+            .logo {
+                font-size: 1.2rem;
+                margin-right: var(--spacing-sm);
+            }
+
+            nav {
+                gap: var(--spacing-sm);
+            }
+
+            nav a {
+                padding: var(--spacing-xs);
+                font-size: 0.9rem;
+            }
+
+            main {
+                padding: var(--spacing-md) var(--spacing-sm);
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                height: auto;
+                padding: var(--spacing-sm);
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .logo {
+                margin-bottom: var(--spacing-sm);
+                text-align: center;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: var(--spacing-xs);
+            }
+
+            nav a {
+                text-align: center;
+                padding: var(--spacing-xs) 0;
+            }
+
+            main {
+                margin-top: calc(var(--header-height) * 2);
+                padding: var(--spacing-sm);
+            }
+        }
+
+        /* Общие компоненты */
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 var(--spacing-md);
+        }
+
+        .card {
+            background-color: var(--background-light);
+            border-radius: var(--border-radius);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Сброс стандартных стилей */
+        input, button, textarea, select {
+            margin: 0;
+            padding: 0;
+            border: none;
+            outline: none;
+            background: none;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        /* Обновленные стили для кнопок */
+        .btn,
+        button[type="submit"],
+        input[type="submit"] {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border: none;
+            min-width: 120px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: var(--background-dark);
+            box-shadow: 0 2px 10px rgba(0, 255, 255, 0.2);
+        }
+
+        .btn::before,
+        button[type="submit"]::before,
+        input[type="submit"]::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                120deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: all 0.5s ease;
+        }
+
+        .btn:hover::before,
+        button[type="submit"]:hover::before,
+        input[type="submit"]:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover,
+        button[type="submit"]:hover,
+        input[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+        }
+
+        /* Обновленные стили для полей ввода */
+        .form-control,
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="number"],
+        input[type="search"],
+        input[type="tel"],
+        input[type="url"],
+        textarea,
+        select {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            transition: all var(--transition-normal);
+            font-size: 1rem;
+            line-height: 1.5;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-control:hover,
+        input:hover,
+        textarea:hover,
+        select:hover {
+            border-color: rgba(0, 255, 255, 0.3);
+        }
+
+        .form-control:focus,
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: rgba(0, 255, 255, 0.05);
+            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
+        }
+
+        .form-control::placeholder,
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        /* Стили для группы полей */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all var(--transition-normal);
+        }
+
+        /* Стили для input с иконками */
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group .input-icon {
+            position: absolute;
+            left: var(--spacing-md);
+            color: var(--text-tertiary);
+            transition: all var(--transition-normal);
+            pointer-events: none;
+        }
+
+        .input-group .form-control,
+        .input-group input {
+            padding-left: calc(var(--spacing-xl) + var(--spacing-xs));
+        }
+
+        .input-group .form-control:focus + .input-icon,
+        .input-group input:focus + .input-icon {
+            color: var(--primary-color);
+        }
+
+        /* Стили для состояния ошибки */
+        .form-control.is-invalid,
+        input.is-invalid {
+            border-color: var(--danger-color);
+        }
+
+        .form-control.is-invalid:focus,
+        input.is-invalid:focus {
+            box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2);
+        }
+
+        /* Стили для disabled состояния */
+        .form-control:disabled,
+        input:disabled,
+        textarea:disabled,
+        select:disabled,
+        .btn:disabled,
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Стили для select */
+        select {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            padding-right: var(--spacing-xl);
+            border-radius: var(--border-radius);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            transition: all var(--transition-normal);
+            font-size: 1rem;
+            line-height: 1.5;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2300ffff' d='M6 8.825L1.175 4 2.238 2.938 6 6.7l3.763-3.763L10.825 4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right var(--spacing-md) center;
+            background-size: 12px;
+        }
+
+        select:hover {
+            border-color: rgba(0, 255, 255, 0.3);
+            background-color: rgba(0, 255, 255, 0.05);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.2);
+        }
+
+        select option {
+            background-color: var(--background-dark);
+            color: var(--text-primary);
+            padding: var(--spacing-sm);
+        }
+
+        /* Стили для disabled состояния select */
+        select:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Стили для группы с select */
+        .form-group select {
+            margin-top: var(--spacing-xs);
+        }
+
+        /* Стили для select с иконкой */
+        .input-group select {
+            padding-left: calc(var(--spacing-xl) + var(--spacing-xs));
+        }
+
+        .input-group select:focus + .input-icon {
+            color: var(--primary-color);
+        }
+
+        /* Анимации для кнопок */
+        @keyframes buttonPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .btn:hover,
+        button[type="submit"]:hover,
+        input[type="submit"]:hover {
+            animation: buttonPulse 2s infinite;
+        }
+
+        /* Анимации для полей ввода */
+        @keyframes inputFocus {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .form-control:focus,
+        input:focus {
+            animation: inputFocus 0.3s ease-out;
+        }
+
+        /* Сообщения */
+        .message {
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .message-success {
+            background-color: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            color: #00ff00;
+        }
+
+        .message-error {
+            background-color: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            color: #ff0000;
+        }
+
+        /* Таблицы */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: var(--spacing-md);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius);
+        }
+
+        th, td {
+            padding: var(--spacing-sm);
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Сетка */
+        .grid {
+            display: grid;
+            gap: var(--spacing-md);
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        /* Утилиты */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .mb-1 { margin-bottom: var(--spacing-xs); }
+        .mb-2 { margin-bottom: var(--spacing-sm); }
+        .mb-3 { margin-bottom: var(--spacing-md); }
+        .mb-4 { margin-bottom: var(--spacing-lg); }
+        .mt-1 { margin-top: var(--spacing-xs); }
+        .mt-2 { margin-top: var(--spacing-sm); }
+        .mt-3 { margin-top: var(--spacing-md); }
+        .mt-4 { margin-top: var(--spacing-lg); }
+
+        /* Обновленные стили для ссылок */
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all var(--transition-normal);
+            position: relative;
+        }
+
+        a:not(.btn):after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform var(--transition-normal);
+        }
+
+        a:not(.btn):hover {
+            color: var(--primary-light);
+        }
+
+        a:not(.btn):hover:after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* Обновленные стили для select */
+        select.form-control {
+            appearance: none;
+            background-image: linear-gradient(45deg, transparent 50%, var(--primary-color) 50%),
+                            linear-gradient(135deg, var(--primary-color) 50%, transparent 50%);
+            background-position: calc(100% - 20px) calc(1em + 2px),
+                               calc(100% - 15px) calc(1em + 2px);
+            background-size: 5px 5px,
+                           5px 5px;
+            background-repeat: no-repeat;
+            padding-right: var(--spacing-xl);
+        }
+
+        /* Обновленные стили для checkbox и radio */
+        input[type="checkbox"],
+        input[type="radio"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-tertiary);
+            border-radius: 4px;
+            margin-right: var(--spacing-xs);
+            position: relative;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+
+        input[type="radio"] {
+            border-radius: 50%;
+        }
+
+        input[type="checkbox"]:checked,
+        input[type="radio"]:checked {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+        }
+
+        input[type="checkbox"]:checked::before {
+            content: '✓';
+            position: absolute;
+            color: var(--background-dark);
+            font-size: 14px;
+            font-weight: bold;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        input[type="radio"]:checked::before {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: var(--background-dark);
+            border-radius: 50%;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Обновленные стили для textarea */
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        /* Стили для disabled состояний */
+        .btn:disabled,
+        .form-control:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn:disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Стили для состояния ошибки */
+        .form-control.is-invalid {
+            border-color: var(--danger-color);
+        }
+
+        .form-control.is-invalid:focus {
+            box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2);
+        }
+
+        .invalid-feedback {
+            color: var(--danger-color);
+            font-size: 0.875rem;
+            margin-top: var(--spacing-xs);
+        }
+
+        /* Общие стили для кнопок-ссылок */
+        .btn-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            text-decoration: none;
+            color: var(--text-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        }
+
+        .btn-link i {
+            font-size: 1.1em;
+        }
+
+        /* Стили для кнопки "Назад" */
+        .btn-back {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+        }
+
+        /* Стили для кнопки теста */
+        .btn-test {
+            background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
+            color: white;
+        }
+
+        .btn-test:hover {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <!-- Хедер -->
+        <header>
+            <a href="{% url 'home' %}" class="logo">BustCom</a>
+            {% if user.is_authenticated %}
+                {% if user.profile.role == "employee" %}
+                    {% include "includes/header_employee.html" %}
+                {% elif user.profile.role == "teacher" %}
+                    {% include "includes/header_teacher.html" %}
+                {% elif user.profile.role == "hr" %}
+                    {% include "includes/header_hr.html" %}
+                {% elif user.profile.role == "training_manager" %}
+                    {% include "includes/header_training_manager.html" %}
+                {% else %}
+                    {% include "includes/header_default.html" %}
+                {% endif %}
+            {% else %}
+                {% include "includes/header_guest.html" %}
+            {% endif %}
+            <button class="theme-toggle">
+                <i class="fas fa-sun sun-icon"></i>
+                <i class="fas fa-moon moon-icon"></i>
+            </button>
+        </header>
+
+        <!-- Основной контент -->
+        <main>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message {% if message.tags %}message-{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Подвал -->
+        <footer>
+            <p>© 2025 BustCom. Все права защищены.</p>
+        </footer>
+    </div>
+    <script src="/static/js/theme.js"></script>
+</body>
+</html>

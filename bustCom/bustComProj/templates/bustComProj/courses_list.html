@@ -1,0 +1,428 @@
+{% extends 'bustComProj/base.html' %}
+
+{% block title %}Курсы{% endblock %}
+
+{% block content %}
+<div class="courses-container">
+    <div class="courses-header">
+        <h1>Доступные курсы</h1>
+        <p>Выберите интересующий вас курс для начала обучения</p>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="recommended">Рекомендуемые курсы</button>
+            <button class="tab-btn" data-tab="my-courses">Мои курсы</button>
+            <button class="tab-btn" data-tab="all-courses">Все курсы</button>
+        </div>
+
+        <div class="tab-content active" id="recommended">
+    <div class="courses-grid">
+                {% for course in recommended_courses %}
+            <div class="course-card">
+                    <div class="course-info">
+                        <h3>{{ course.title }}</h3>
+                        <p class="course-description">{{ course.description|truncatechars:150 }}</p>
+                        <div class="course-meta">
+                            <span class="course-duration">
+                                <i class="fas fa-clock"></i>
+                                {{ course.duration }} часов
+                            </span>
+                            <span class="course-level">
+                                <i class="fas fa-signal"></i>
+                                {{ course.get_level_display }}
+                            </span>
+                        </div>
+                        <a href="{% url 'course_detail' course.id %}" class="btn btn-primary">
+                            Подробнее
+                        </a>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no-courses">
+                    <p>Нет доступных рекомендованных курсов</p>
+                </div>
+                {% endfor %}
+            </div>
+                </div>
+                
+        <div class="tab-content" id="my-courses">
+            <div class="courses-grid">
+                {% for course in user_courses %}
+                <div class="course-card">
+                <div class="course-info">
+                        <h3>{{ course.title }}</h3>
+                        <p class="course-description">{{ course.description|truncatechars:150 }}</p>
+                        <div class="course-meta">
+                            <span class="course-status">
+                                <i class="fas fa-circle"></i>
+                                {{ course.get_status_display }}
+                            </span>
+                        </div>
+                        <div class="course-progress">
+                            <div class="course-progress-text">
+                                <span>Прогресс курса</span>
+                                <span>{{ course.progress }}%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: {{ course.progress }}%"></div>
+                            </div>
+                        </div>
+                        <a href="{% url 'course_detail' course.id %}" class="btn btn-primary">
+                            Продолжить обучение
+                        </a>
+                    </div>
+                    </div>
+                {% empty %}
+                <div class="no-courses">
+                    <p>Вы еще не записаны ни на один курс</p>
+                </div>
+                {% endfor %}
+            </div>
+                </div>
+
+        <div class="tab-content" id="all-courses">
+            <div class="courses-grid">
+                {% for course in all_courses %}
+                <div class="course-card">
+                    <div class="course-info">
+                        <h3>{{ course.title }}</h3>
+                        <p class="course-description">{{ course.description|truncatechars:150 }}</p>
+                        <div class="course-meta">
+                            <span class="course-duration">
+                                <i class="fas fa-clock"></i>
+                                {{ course.duration }} часов
+                            </span>
+                            <span class="course-level">
+                                <i class="fas fa-signal"></i>
+                                {{ course.get_level_display }}
+                            </span>
+                        </div>
+                        <a href="{% url 'course_detail' course.id %}" class="btn btn-primary">
+                            Подробнее
+                        </a>
+                </div>
+            </div>
+        {% empty %}
+            <div class="no-courses">
+                    <p>Нет доступных курсов</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .courses-container {
+        padding: var(--spacing-xl);
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .courses-header {
+        text-align: center;
+        margin-bottom: var(--spacing-xl);
+        background: rgba(0, 0, 0, 0.2);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .courses-header h1 {
+        font-size: 2.5rem;
+        color: #ffffff;
+        margin-bottom: var(--spacing-sm);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .courses-header p {
+        color: #e0e0e0;
+        font-size: 1.1rem;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .tabs-container {
+        background: var(--background-light);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        border: 1px solid rgba(0, 255, 255, 0.1);
+    }
+
+    .tabs {
+        display: flex;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.2);
+    }
+
+    .tab-btn {
+        padding: var(--spacing-md) var(--spacing-xl);
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        flex: 1;
+        text-align: center;
+    }
+
+    .tab-btn:hover {
+        color: var(--text-primary);
+        background: rgba(0, 255, 255, 0.1);
+    }
+
+    .tab-btn.active {
+        color: var(--primary-color);
+        background: rgba(0, 255, 255, 0.15);
+    }
+
+    .tab-btn.active::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--primary-color);
+        box-shadow: 0 0 10px var(--primary-color);
+    }
+
+    .tab-content {
+        display: none;
+        padding: var(--spacing-xl);
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .courses-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: var(--spacing-lg);
+    }
+
+    .course-card {
+        background: var(--background-light);
+        border-radius: 12px;
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .course-card h3 {
+        color: var(--text-primary);
+        margin-bottom: var(--spacing-sm);
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .course-card p {
+        color: var(--text-secondary);
+        margin-bottom: var(--spacing-sm);
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .course-card .price {
+        color: var(--accent-color);
+        font-weight: bold;
+        font-size: 1.1rem;
+        margin-top: var(--spacing-sm);
+    }
+
+    .course-card .instructor {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-top: var(--spacing-sm);
+    }
+
+    .course-card .rating {
+        color: #ffd700;
+        margin-top: var(--spacing-sm);
+    }
+
+    .course-card .enroll-button {
+        background: var(--accent-color);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin-top: var(--spacing-sm);
+        width: 100%;
+        text-align: center;
+    }
+
+    .course-card .enroll-button:hover {
+        background: var(--accent-color-dark);
+        transform: translateY(-2px);
+    }
+
+    .course-card .enroll-button:active {
+        transform: translateY(0);
+    }
+
+    .course-card .enrolled {
+        background: var(--success-color);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 500;
+        margin-top: var(--spacing-sm);
+        width: 100%;
+        text-align: center;
+        cursor: not-allowed;
+        opacity: 0.8;
+    }
+
+    .course-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: var(--spacing-md);
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+
+    .course-meta span {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+    }
+
+    .course-progress {
+        width: 100%;
+        margin-top: var(--spacing-sm);
+        position: relative;
+    }
+
+    .course-progress-text {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-xs);
+        color: var(--text-primary);
+    }
+
+    .progress-bar-container {
+        width: 100%;
+        height: 8px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+
+    .course-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        background-color: var(--background-lighter);
+        color: var(--text-primary);
+    }
+
+    .course-status i {
+        font-size: 0.75rem;
+    }
+
+    .no-courses {
+        text-align: center;
+        padding: var(--spacing-xl);
+        color: var(--text-secondary);
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: var(--border-radius);
+    }
+
+    .btn-primary {
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+        padding: var(--spacing-md);
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--text-primary);
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .courses-container {
+            padding: var(--spacing-md);
+    }
+
+        .courses-header h1 {
+            font-size: 2rem;
+    }
+
+        .tabs {
+            flex-direction: column;
+    }
+
+        .tab-btn {
+            width: 100%;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+        .tab-btn:last-child {
+            border-bottom: none;
+    }
+
+        .courses-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and contents
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    });
+</script>
+{% endblock %}

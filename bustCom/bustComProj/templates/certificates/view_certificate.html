@@ -1,0 +1,162 @@
+{% extends 'bustComProj/base.html' %}
+{% load static %}
+
+{% block title %}Просмотр сертификата{% endblock %}
+
+{% block content %}
+<div class="container fade-in">
+    <div class="certificate-view">
+        <div class="certificate-header">
+            <h1>Сертификат об окончании курса</h1>
+            <p class="certificate-number">№ {{ certificate.id }}</p>
+        </div>
+        
+        <div class="certificate-body">
+            <p class="certificate-text">
+                Настоящим подтверждается, что
+                <span class="certificate-user">{{ certificate.user.get_full_name }}</span>
+                успешно завершил(а) курс
+                <span class="certificate-course">{{ certificate.course.name }}</span>
+            </p>
+            
+            <p class="certificate-date">
+                Дата выдачи: {{ certificate.issued_at|date:"d.m.Y" }}
+            </p>
+        </div>
+        
+        <div class="certificate-footer">
+            <div class="certificate-actions">
+                <a href="{% url 'download_certificate' certificate.id %}" class="btn-neon">
+                    <i class="fas fa-download"></i> Скачать сертификат
+                </a>
+                <a href="{% url 'my_certificates' %}" class="btn-neon">
+                    <i class="fas fa-arrow-left"></i> Назад к сертификатам
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .certificate-view {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 3rem;
+        background: rgba(18, 18, 18, 0.9);
+        border: 2px solid #00ffff;
+        border-radius: 15px;
+        box-shadow: 0 0 40px rgba(0, 255, 255, 0.1);
+        color: #fff;
+    }
+
+    .certificate-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        border-bottom: 2px solid #00ffff;
+        padding-bottom: 1rem;
+    }
+
+    .certificate-header h1 {
+        color: #00ffff;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .certificate-number {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.1rem;
+    }
+
+    .certificate-body {
+        text-align: center;
+        margin: 3rem 0;
+        font-size: 1.2rem;
+        line-height: 1.8;
+    }
+
+    .certificate-text {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .certificate-user,
+    .certificate-course {
+        color: #00ffff;
+        font-weight: 600;
+        font-size: 1.3rem;
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+
+    .certificate-date {
+        margin-top: 2rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .certificate-footer {
+        margin-top: 3rem;
+        text-align: center;
+        border-top: 2px solid rgba(0, 255, 255, 0.2);
+        padding-top: 2rem;
+    }
+
+    .certificate-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .btn-neon {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.8rem 1.5rem;
+        background: transparent;
+        color: #00ffff;
+        border: 1px solid #00ffff;
+        border-radius: 25px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+    }
+
+    .btn-neon:hover {
+        background: rgba(0, 255, 255, 0.1);
+        color: #fff;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+        text-decoration: none;
+    }
+
+    .btn-neon:active {
+        transform: scale(0.98);
+    }
+
+    @media (max-width: 768px) {
+        .certificate-view {
+            padding: 1.5rem;
+            margin: 1rem;
+        }
+
+        .certificate-header h1 {
+            font-size: 2rem;
+        }
+
+        .certificate-body {
+            font-size: 1.1rem;
+        }
+
+        .certificate-actions {
+            flex-direction: column;
+        }
+
+        .btn-neon {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %} 

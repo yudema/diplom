@@ -1,0 +1,164 @@
+{% extends 'bustComProj/base.html' %}
+
+{% block title %}Редактирование плана обучения{% endblock %}
+
+{% block content %}
+<div class="container fade-in">
+    <div class="section">
+        <h1 class="section-title">Редактирование плана обучения</h1>
+        
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0"><i class="fas fa-edit me-2"></i>Редактирование плана "{{ plan.title }}"</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'edit_training_plan' plan.id %}">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="title" class="form-label">Название плана</label>
+                                <input type="text" id="title" name="title" class="form-control" value="{{ plan.title }}" required>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="start_date" class="form-label">Дата начала</label>
+                                <input type="date" id="start_date" name="start_date" class="form-control" value="{{ plan.start_date|date:'Y-m-d' }}" required>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="end_date" class="form-label">Дата окончания</label>
+                                <input type="date" id="end_date" name="end_date" class="form-control" value="{{ plan.end_date|date:'Y-m-d' }}" required>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="status" class="form-label">Статус плана</label>
+                                <select id="status" name="status" class="form-control">
+                                    <option value="draft" {% if plan.status == 'draft' %}selected{% endif %}>Черновик</option>
+                                    <option value="active" {% if plan.status == 'active' %}selected{% endif %}>Активный</option>
+                                    <option value="completed" {% if plan.status == 'completed' %}selected{% endif %}>Завершен</option>
+                                    <option value="cancelled" {% if plan.status == 'cancelled' %}selected{% endif %}>Отменен</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label for="description" class="form-label">Описание</label>
+                                <textarea id="description" name="description" class="form-control" rows="4" required>{{ plan.description }}</textarea>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="courses" class="form-label">Выберите курсы</label>
+                                <select id="courses" name="courses" class="form-control" multiple size="5" required>
+                                    {% for course in courses %}
+                                    <option value="{{ course.id }}" {% if course in plan.courses.all %}selected{% endif %}>{{ course.title }}</option>
+                                    {% endfor %}
+                                </select>
+                                <small class="form-text text-muted">Для выбора нескольких курсов удерживайте Ctrl/Cmd</small>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="employees" class="form-label">Выберите сотрудников</label>
+                                <div class="d-flex mb-2" style="gap: 10px;">
+                                    <button type="button" class="btn btn-sm btn-outline-primary" style="flex: 1;" id="selectAllEmployees">
+                                        <i class="fas fa-users me-1"></i> Выбрать всех
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" style="flex: 1;" id="clearAllEmployees">
+                                        <i class="fas fa-times-circle me-1"></i> Очистить выбор
+                                    </button>
+                                </div>
+                                
+                                <div class="input-group mb-2">
+                                    <input type="text" class="form-control" id="employeeSearch" placeholder="Поиск сотрудника...">
+                                    <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="border rounded p-2" style="height: 200px; overflow-y: auto;">
+                                    <div class="employee-list">
+                                        {% for employee in employees %}
+                                        <div class="form-check employee-item">
+                                            <input class="form-check-input" type="checkbox" name="employees" value="{{ employee.id }}" id="employee{{ employee.id }}" {% if employee in plan.employees.all %}checked{% endif %}>
+                                            <label class="form-check-label" for="employee{{ employee.id }}">
+                                                {{ employee.get_full_name|default:employee.username }}
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                <small class="form-text text-muted">Выберите сотрудников, которые будут включены в этот план обучения</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-end mt-3">
+                        <a href="{% url 'create_training_plan' %}" class="btn btn-secondary me-2">
+                            <i class="fas fa-times me-2"></i> Отмена
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-2"></i> Сохранить изменения
+                        </button>
+                    </div>
+                    
+                    <!-- Отладочная информация -->
+                    <div class="mt-3 p-3 bg-light rounded">
+                        <h6>Отладочная информация:</h6>
+                        <p>ID плана: {{ plan.id }}</p>
+                        <p>Количество сотрудников: {{ plan.employees.all|length }}</p>
+                        <p>Количество курсов: {{ plan.courses.all|length }}</p>
+                        <p>Сотрудники: {{ plan.employees.all|join:", " }}</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Кнопка выбора всех сотрудников
+    document.getElementById('selectAllEmployees').addEventListener('click', function() {
+        var checkboxes = document.querySelectorAll('input[name="employees"]');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = true;
+        });
+    });
+    
+    // Кнопка очистки выбора сотрудников
+    document.getElementById('clearAllEmployees').addEventListener('click', function() {
+        var checkboxes = document.querySelectorAll('input[name="employees"]');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = false;
+        });
+    });
+    
+    // Поиск сотрудников
+    document.getElementById('employeeSearch').addEventListener('input', function() {
+        var searchText = this.value.toLowerCase();
+        var employeeItems = document.querySelectorAll('.employee-item');
+        
+        employeeItems.forEach(function(item) {
+            var employeeName = item.querySelector('label').textContent.toLowerCase();
+            if (employeeName.includes(searchText)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+    
+    // Очистка поиска
+    document.getElementById('clearSearch').addEventListener('click', function() {
+        document.getElementById('employeeSearch').value = '';
+        var employeeItems = document.querySelectorAll('.employee-item');
+        employeeItems.forEach(function(item) {
+            item.style.display = 'block';
+        });
+    });
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,38 @@
+{% extends "bustComProj/base.html" %}
+
+{% block title %}Панель администратора{% endblock %}
+
+{% block content %}
+    <h1>Панель администратора</h1>
+    <ul>
+        <li><a href="{% url 'manage_users' %}">👥 Управление пользователями</a></li>
+        <li><a href="{% url 'upload_courses' %}">📂 Загрузка курсов</a></li>
+        <li><a href="{% url 'monitor_activity' %}">📊 Мониторинг активности</a></li>
+    </ul>
+
+    <h2>📈 Статистика</h2>
+    <canvas id="dashboardChart"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        fetch("{% url 'get_dashboard_data' %}")
+            .then(response => response.json())
+            .then(data => {
+                var ctx = document.getElementById('dashboardChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ["Курсы", "Тесты", "Пройдено лекций", "Пользователи"],
+                        datasets: [{
+                            label: "Общая активность",
+                            data: [data.courses, data.tests, data.lectures_completed, data.users],
+                            backgroundColor: ['#ff00ff', '#00ffcc', '#ffcc00', '#ff6600'],
+                        }]
+                    },
+                    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                });
+            });
+    </script>
+{% endblock %}
+
+
