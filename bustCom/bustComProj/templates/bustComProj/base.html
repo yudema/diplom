@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#00ffff">
     <title>{% block title %}BustCom{% endblock %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/static/css/enhanced.css">
@@ -46,16 +47,15 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             background-color: var(--background-dark);
             color: var(--text-primary);
             line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            overflow-x: hidden;
         }
 
         #root {
@@ -131,57 +131,115 @@
             font-size: 0.9rem;
         }
 
-        /* Адаптивные стили */
+        /* Мобильные стили */
         @media (max-width: 768px) {
-            header {
+            :root {
+                --spacing-xs: 0.25rem;
+                --spacing-sm: 0.5rem;
+                --spacing-md: 1rem;
+                --spacing-lg: 1.5rem;
+                --spacing-xl: 2rem;
+                --header-height: 50px;
+                --footer-height: 50px;
+            }
+
+            .container {
                 padding: 0 var(--spacing-sm);
             }
 
-            .logo {
-                font-size: 1.2rem;
-                margin-right: var(--spacing-sm);
-            }
-
-            nav {
-                gap: var(--spacing-sm);
-            }
-
-            nav a {
-                padding: var(--spacing-xs);
+            .btn {
+                padding: 0.5rem 1rem;
                 font-size: 0.9rem;
             }
 
-            main {
-                padding: var(--spacing-md) var(--spacing-sm);
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.5rem; }
+            h3 { font-size: 1.2rem; }
+            p { font-size: 0.9rem; }
+
+            .card {
+                padding: var(--spacing-sm);
+                margin-bottom: var(--spacing-sm);
+            }
+
+            .navbar {
+                padding: var(--spacing-xs) var(--spacing-sm);
+            }
+
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .form-control {
+                font-size: 16px; /* Предотвращает масштабирование на iOS */
+            }
+
+            /* Улучшенные стили для мобильных кнопок */
+            .btn {
+                min-height: 44px; /* Минимальный размер для удобного нажатия */
+                padding: 0.75rem 1.25rem;
+            }
+
+            /* Адаптивные изображения */
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            /* Улучшенная навигация для мобильных устройств */
+            .mobile-menu {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: var(--background-light);
+                padding: var(--spacing-sm);
+                display: flex;
+                justify-content: space-around;
+                z-index: 1000;
+            }
+
+            .mobile-menu-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                color: var(--text-secondary);
+                text-decoration: none;
+                font-size: 0.8rem;
+            }
+
+            .mobile-menu-item i {
+                font-size: 1.2rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .mobile-menu-item.active {
+                color: var(--primary-color);
             }
         }
 
+        /* Дополнительные стили для очень маленьких экранов */
         @media (max-width: 480px) {
-            header {
-                height: auto;
-                padding: var(--spacing-sm);
-                flex-direction: column;
-                align-items: stretch;
+            :root {
+                --spacing-xs: 0.2rem;
+                --spacing-sm: 0.4rem;
+                --spacing-md: 0.8rem;
+                --spacing-lg: 1.2rem;
+                --spacing-xl: 1.6rem;
             }
 
-            .logo {
-                margin-bottom: var(--spacing-sm);
-                text-align: center;
+            .container {
+                padding: 0 var(--spacing-xs);
             }
 
-            nav {
-                flex-direction: column;
-                gap: var(--spacing-xs);
-            }
-
-            nav a {
-                text-align: center;
-                padding: var(--spacing-xs) 0;
-            }
-
-            main {
-                margin-top: calc(var(--header-height) * 2);
-                padding: var(--spacing-sm);
+            .btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
             }
         }
 
