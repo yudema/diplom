@@ -1,0 +1,172 @@
+{% extends 'dashboards/dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Статистика курсов{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Статистика по вашим курсам</h2>
+    
+    {% if courses_statistics %}
+        <div class="row">
+            {% for stats in courses_statistics %}
+                <div class="col-md-6 mb-4">
+                    <div class="stats-card">
+                        <div class="stats-card-header">
+                            <h5 class="stats-card-title">{{ stats.course.title }}</h5>
+                        </div>
+                        <div class="stats-card-body">
+                            <div class="stats-grid">
+                                <div class="stats-item">
+                                    <h6>Всего студентов</h6>
+                                    <p class="stats-value">{{ stats.total_students }}</p>
+                                </div>
+                                <div class="stats-item">
+                                    <h6>Завершили курс</h6>
+                                    <p class="stats-value">{{ stats.completed_count }}</p>
+                                </div>
+                                <div class="stats-item">
+                                    <h6>Средний прогресс</h6>
+                                    <p class="stats-value">{{ stats.avg_progress }}%</p>
+                                </div>
+                                <div class="stats-item">
+                                    <h6>Всего лекций</h6>
+                                    <p class="stats-value">{{ stats.total_lectures }}</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <h6 class="test-stats-title">Статистика тестов</h6>
+                                <div class="test-stats">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <small>Средний балл</small>
+                                            <p class="stats-value">{{ stats.avg_test_score }}</p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <small>Максимальный балл</small>
+                                            <p class="stats-value">{{ stats.max_test_score }}</p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <small>Минимальный балл</small>
+                                            <p class="stats-value">{{ stats.min_test_score }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            У вас пока нет курсов для отображения статистики.
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .stats-card {
+        background-color: var(--background-light);
+        border-radius: var(--border-radius);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+    }
+
+    .stats-card-header {
+        background-color: var(--background-lighter);
+        padding: var(--spacing-md);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stats-card-title {
+        color: var(--primary-color);
+        margin: 0;
+        font-size: 1.2rem;
+    }
+
+    .stats-card-body {
+        padding: var(--spacing-md);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .stats-item {
+        background-color: var(--background-lighter);
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius-sm);
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .stats-item h6 {
+        color: var(--text-secondary);
+        margin-bottom: var(--spacing-xs);
+        font-size: 0.9rem;
+    }
+    
+    .stats-value {
+        color: var(--primary-color);
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin: 0;
+    }
+    
+    .test-stats {
+        background-color: var(--background-lighter);
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius-sm);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .test-stats small {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        display: block;
+        margin-bottom: var(--spacing-xs);
+    }
+
+    .test-stats-title {
+        color: var(--text-secondary);
+        margin-bottom: var(--spacing-md);
+        font-size: 1rem;
+    }
+
+    .alert-info {
+        background-color: var(--background-lighter);
+        color: var(--text-primary);
+        border: 1px solid var(--primary-color);
+        border-radius: var(--border-radius);
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-value {
+            font-size: 1.2rem;
+        }
+
+        .test-stats .row {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .test-stats .col-md-4 {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .test-stats .col-md-4:last-child {
+            margin-bottom: 0;
+        }
+    }
+</style>
+{% endblock %} 

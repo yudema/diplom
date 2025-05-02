@@ -31,9 +31,10 @@ from .models import (
 )
 from .forms import (
     CustomUserCreationForm, ProfileForm, CommentForm, LectureForm, TestForm, QuestionForm,
-    AnswerForm, CourseForm
+    AnswerForm, CourseForm, CustomUserChangeForm
 )
 from .decorators import role_required
+from .telegram_utils import notify_training_request
 
 def role_required(role):
     """Декоратор для проверки роли пользователя"""
@@ -79,6 +80,18 @@ TABLES = {
     'certificates': 'Сертификаты',
 }
 
+FIELD_LABELS = {
+    'id': 'ID',
+    'username': 'Логин',
+    'email': 'Email',
+    'first_name': 'Имя',
+    'last_name': 'Фамилия',
+    'profile__role': 'Роль',
+    'last_login': 'Последний вход',
+    'is_active': 'Статус',
+    # Добавьте остальные поля по необходимости
+}
+
 ROLE_DASHBOARD = {
     'admin': 'admin_dashboard',
     'teacher': 'teacher_dashboard',
@@ -118,7 +131,8 @@ def manage_table(request, table_name):
         'objects': objects,
         'object_values': object_values,
         'table_name': table_name,
-        'fields': fields
+        'fields': fields,
+        'field_labels': FIELD_LABELS,
     })
 
 @role_required('admin')
@@ -127,7 +141,10 @@ def add_object(request, table_name):
     if not model:
         return JsonResponse({'error': 'Неверное имя таблицы'}, status=400)
 
-    form_class = modelform_factory(model, fields="__all__")
+    if table_name == 'users':
+        form_class = CustomUserCreationForm
+    else:
+        form_class = modelform_factory(model, fields="__all__")
     form = form_class()
 
     if request.method == 'POST':
@@ -136,7 +153,7 @@ def add_object(request, table_name):
             form.save()
             return redirect('manage_table', table_name=table_name)
 
-    return render(request, 'admin_panel/add_object.html', {'form': form, 'table_name': table_name})
+    return render(request, 'admin_panel/add_object.html', {'form': form, 'table_name': table_name, 'TABLES': TABLES})
 
 @role_required('admin')
 def edit_object(request, table_name, object_id):
@@ -145,7 +162,10 @@ def edit_object(request, table_name, object_id):
         return JsonResponse({'error': 'Неверное имя таблицы'}, status=400)
 
     obj = get_object_or_404(model, pk=object_id)
-    form_class = modelform_factory(model, fields="__all__")
+    if table_name == 'users':
+        form_class = CustomUserChangeForm
+    else:
+        form_class = modelform_factory(model, fields="__all__")
     form = form_class(instance=obj)
 
     if request.method == 'POST':
@@ -154,7 +174,7 @@ def edit_object(request, table_name, object_id):
             form.save()
             return redirect('manage_table', table_name=table_name)
 
-    return render(request, 'admin_panel/edit_object.html', {'form': form, 'table_name': table_name})
+    return render(request, 'admin_panel/edit_object.html', {'form': form, 'table_name': table_name, 'TABLES': TABLES})
 
 @role_required('admin')
 def delete_object(request, table_name, object_id):
@@ -448,10 +468,15 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
+            if user.is_blocked:
+                messages.error(request, 'Ваша учетная запись заблокирована. Пожалуйста, обратитесь к администратору.')
+                return render(request, 'bustComProj/login.html')
+                
             login(request, user)
             # Get or create profile
             profile, created = Profile.objects.get_or_create(user=user)
-            if not profile.has_seen_guide:
+            # Only show guide and test for employees who haven't seen it
+            if profile.role == 'employee' and not profile.has_seen_guide:
                 return redirect('first_login_guide')
             return redirect('dashboard_redirect')
         else:
@@ -491,11 +516,13 @@ def enroll_course(request, course_id):
             messages.info(request, f"Вы уже подали заявку на этот курс!")
         else:
             # Создаем заявку на обучение
-            TrainingRequest.objects.create(
+            training_request = TrainingRequest.objects.create(
                 user=request.user,
                 course=course,
                 reason="Заявка от сотрудника"
             )
+            # Отправляем уведомление в Telegram
+            notify_training_request(training_request)
             messages.success(request, f"Заявка на курс '{course.title}' успешно отправлена и ожидает подтверждения.")
 
     return redirect('course_detail', course_id=course.id)
@@ -1061,32 +1088,37 @@ def add_lecture_material(request):
         resource_type = request.POST.get('resource_type')
         resource_path = request.POST.get('resource_path')
 
+        # Проверяем, что все поля заполнены
         if not all([lecture_id, resource_type, resource_path]):
             messages.error(request, 'Пожалуйста, заполните все поля')
-            return redirect('add_lecture_material')
+        else:
+            try:
+                lecture = Lecture.objects.get(id=lecture_id)
+                if lecture.course.teacher != request.user:
+                    messages.error(request, 'У вас нет прав для добавления материалов к этой лекции')
+                else:
+                    LectureResource.objects.create(
+                        lecture=lecture,
+                        resource_type=resource_type,
+                        resource_path=resource_path
+                    )
+                    messages.success(request, 'Материал успешно добавлен')
+                    return redirect('lecture_detail', lecture_id=lecture.id)
+            except Lecture.DoesNotExist:
+                messages.error(request, 'Лекция не найдена')
 
-        try:
-            lecture = Lecture.objects.get(id=lecture_id)
-            if lecture.course.teacher != request.user:
-                messages.error(request, 'У вас нет прав для добавления материалов к этой лекции')
-                return redirect('add_lecture_material')
-
-            LectureResource.objects.create(
-                lecture=lecture,
-                resource_type=resource_type,
-                resource_path=resource_path
-            )
-            messages.success(request, 'Материал успешно добавлен')
-            return redirect('lecture_detail', lecture_id=lecture.id)
-
-        except Lecture.DoesNotExist:
-            messages.error(request, 'Лекция не найдена')
-            return redirect('add_lecture_material')
-    else:
+        # Получаем список лекций для формы
         courses = Course.objects.filter(teacher=request.user)
         lectures = Lecture.objects.filter(course__in=courses).order_by('course__title', 'order_num')
 
-        return render(request, 'bustComProj/courses/add_lecture_material.html', {
+        return render(request, 'bustComProj/add_lecture_material.html', {
+            'lectures': lectures,
+            'title': 'Добавить материал к лекции'
+        })
+    else:
+        courses = Course.objects.filter(teacher=request.user)
+        lectures = Lecture.objects.filter(course__in=courses).order_by('course__title', 'order_num')
+        return render(request, 'bustComProj/add_lecture_material.html', {
             'lectures': lectures,
             'title': 'Добавить материал к лекции'
         })
@@ -1411,6 +1443,10 @@ def manage_employees(request):
 
 @login_required
 def user_guide(request):
+    # Check if user is an employee
+    if request.user.profile.role != 'employee':
+        return redirect('dashboard_redirect')
+        
     guide = UserGuide.objects.first()  # Получаем первое руководство
     if not guide:
         # Создаем руководство по умолчанию
@@ -1472,6 +1508,10 @@ def user_guide(request):
 
 @login_required
 def recommendation_test(request):
+    # Check if user is an employee
+    if request.user.profile.role != 'employee':
+        return redirect('dashboard_redirect')
+        
     # Проверяем, прошел ли пользователь тест
     if UserRecommendationTestResult.objects.filter(user=request.user).exists():
         return redirect('courses_list')
@@ -1519,6 +1559,10 @@ def recommendation_test(request):
                     answer=answer,
                     is_correct=answer == question.correct_answer
                 )
+            # Mark guide as seen after completing the test
+            profile = request.user.profile
+            profile.has_seen_guide = True
+            profile.save()
             return redirect('courses_list')
         except Exception as e:
             messages.error(request, 'Произошла ошибка при сохранении ответов. Пожалуйста, попробуйте снова.')
@@ -1535,3 +1579,57 @@ def first_login_guide(request):
     if request.method == 'POST':
         return redirect('recommendation_test')
     return render(request, 'bustComProj/first_login_guide.html')
+
+@login_required
+@role_required('teacher')
+def teacher_statistics(request):
+    """View for teacher to see statistics about their students' performance"""
+    # Get courses taught by this teacher
+    teacher_courses = Course.objects.filter(teacher=request.user)
+    
+    courses_statistics = []
+    for course in teacher_courses:
+        # Get all enrollments for this course
+        enrollments = Enrollment.objects.filter(course=course)
+        
+        # Calculate course statistics
+        total_students = enrollments.count()
+        completed_count = enrollments.filter(status='завершён').count()
+        
+        # Calculate average progress
+        total_lectures = Lecture.objects.filter(course=course).count()
+        course_progress = []
+        
+        for enrollment in enrollments:
+            completed_lectures = CompletedLecture.objects.filter(
+                user=enrollment.user,
+                lecture__course=course
+            ).count()
+            if total_lectures > 0:
+                progress = (completed_lectures / total_lectures) * 100
+                course_progress.append(progress)
+        
+        avg_progress = sum(course_progress) / len(course_progress) if course_progress else 0
+        
+        # Get test statistics
+        course_tests = Test.objects.filter(lecture__course=course)
+        test_attempts = TestAttempt.objects.filter(test__in=course_tests)
+        
+        avg_test_score = test_attempts.aggregate(Avg('score'))['score__avg'] or 0
+        max_test_score = test_attempts.aggregate(Max('score'))['score__max'] or 0
+        min_test_score = test_attempts.aggregate(Min('score'))['score__min'] or 0
+        
+        courses_statistics.append({
+            'course': course,
+            'total_students': total_students,
+            'completed_count': completed_count,
+            'avg_progress': round(avg_progress, 1),
+            'avg_test_score': round(avg_test_score, 1),
+            'max_test_score': max_test_score,
+            'min_test_score': min_test_score,
+            'total_lectures': total_lectures
+        })
+    
+    return render(request, 'bustComProj/teacher_statistics.html', {
+        'courses_statistics': courses_statistics
+    })

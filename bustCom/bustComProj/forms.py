@@ -1,32 +1,34 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth import get_user_model
 from .models import User, Role, Profile, Course, Comment,Lecture, Test, Question, Answer
 from django.forms.widgets import DateInput
 User = get_user_model()  
 
-class CustomUserCreationForm(UserCreationForm):
-    role = forms.ModelChoiceField(queryset=Role.objects.all(), required=True, label="Роль")
-
+class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'role']
+        fields = ('username', 'email', 'first_name', 'last_name', 'role', 'is_blocked')
+        labels = {
+            'username': 'Логин',
+            'email': 'Email',
+            'first_name': 'Имя',
+            'last_name': 'Фамилия',
+            'role': 'Роль',
+            'is_blocked': 'Заблокирован',
+        }
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.role = self.cleaned_data['role']
-
-        if commit:
-            user.save()
-            # Create profile with default values
-            Profile.objects.get_or_create(
-                user=user,
-                defaults={
-                    'role': user.role.name,
-                    'has_seen_guide': False
-                }
-            )
-        return user
+class CustomUserCreationForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name', 'role')
+        labels = {
+            'username': 'Логин',
+            'email': 'Email',
+            'first_name': 'Имя',
+            'last_name': 'Фамилия',
+            'role': 'Роль',
+        }
 
 class CourseForm(forms.ModelForm):
     class Meta:

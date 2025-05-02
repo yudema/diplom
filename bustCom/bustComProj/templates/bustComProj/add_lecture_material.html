@@ -4,57 +4,70 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="page-title">Добавить материал к лекции</h1>
+    <div class="form-container">
+        <h1 class="page-title">Добавить материал к лекции</h1>
 
-    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
-                    {{ message }}
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if lectures %}
+            <form method="post" class="form" id="materialForm">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="lecture">Выберите лекцию</label>
+                    <select name="lecture" id="lecture" class="form-control" required>
+                        <option value="">-- Выберите лекцию --</option>
+                        {% for lecture in lectures %}
+                            <option value="{{ lecture.id }}">{{ lecture.course.title }} - {{ lecture.title }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
-            {% endfor %}
-        </div>
-    {% endif %}
 
-    {% if lectures %}
-        <form method="post" class="form">
-            {% csrf_token %}
-            
-            <div class="form-group">
-                <label for="lecture_id">Выберите лекцию:</label>
-                <select name="lecture_id" id="lecture_id" required class="form-control">
-                    <option value="">-- Выберите лекцию --</option>
-                    {% for lecture in lectures %}
-                        <option value="{{ lecture.id }}">{{ lecture.course.name }} - {{ lecture.title }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+                <div class="form-group">
+                    <label for="resource_type">Тип материала</label>
+                    <select name="resource_type" id="resource_type" class="form-control" required>
+                        <option value="">-- Выберите тип --</option>
+                        <option value="file">Файл</option>
+                        <option value="video">Видео</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
-                <label for="resource_type">Тип ресурса:</label>
-                <select name="resource_type" id="resource_type" required class="form-control">
-                    <option value="file">Файл</option>
-                    <option value="video">Видео</option>
-                </select>
-            </div>
+                <div class="form-group">
+                    <label for="resource_path">Ссылка на материал</label>
+                    <input type="text" name="resource_path" id="resource_path" class="form-control" 
+                           placeholder="Введите URL файла или видео" required>
+                    <small class="help-text">Укажите прямую ссылку на файл или видео</small>
+                </div>
 
-            <div class="form-group">
-                <label for="resource_path">Ссылка на ресурс:</label>
-                <input type="text" name="resource_path" id="resource_path" required class="form-control"
-                       placeholder="Введите URL файла или видео">
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-upload"></i> Добавить материал
+                    </button>
+                    <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Назад
+                    </a>
+                </div>
+            </form>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-info-circle"></i>
+                <p>У вас пока нет лекций. Сначала создайте курс и добавьте в него лекции.</p>
+                <div class="empty-state-actions">
+                    <a href="{% url 'create_course' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Создать курс
+                    </a>
+                </div>
             </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Добавить материал</button>
-                <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary">Назад</a>
-            </div>
-        </form>
-    {% else %}
-        <div class="no-lectures">
-            <p>У вас пока нет лекций. Сначала создайте курс и добавьте в него лекции.</p>
-            <a href="{% url 'create_course' %}" class="btn btn-primary">Создать курс</a>
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
 </div>
 
 <style>
@@ -62,6 +75,13 @@
         max-width: 800px;
         margin: 0 auto;
         padding: 2rem 1rem;
+    }
+
+    .form-container {
+        background: rgba(22, 22, 22, 0.95);
+        border: 1px solid rgba(0, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2rem;
     }
 
     .page-title {
@@ -73,10 +93,6 @@
     }
 
     .form {
-        background: rgba(22, 22, 22, 0.95);
-        border: 1px solid rgba(0, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 2rem;
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
@@ -115,6 +131,11 @@
         color: #fff;
     }
 
+    .help-text {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.8rem;
+    }
+
     .form-actions {
         display: flex;
         gap: 1rem;
@@ -124,7 +145,7 @@
     .btn {
         display: inline-flex;
         align-items: center;
-        justify-content: center;
+        gap: 0.5rem;
         padding: 0.75rem 1.5rem;
         border-radius: 8px;
         font-size: 0.9rem;
@@ -133,6 +154,10 @@
         transition: all 0.2s ease;
         border: none;
         cursor: pointer;
+    }
+
+    .btn i {
+        font-size: 1rem;
     }
 
     .btn-primary {
@@ -179,21 +204,24 @@
         color: #00ff95;
     }
 
-    .no-lectures {
+    .empty-state {
         text-align: center;
         padding: 3rem;
-        background: rgba(22, 22, 22, 0.95);
-        border: 1px solid rgba(0, 255, 255, 0.1);
-        border-radius: 12px;
+        color: rgba(255, 255, 255, 0.7);
     }
 
-    .no-lectures p {
-        color: rgba(255, 255, 255, 0.7);
+    .empty-state i {
+        font-size: 2rem;
+        color: #00ffff;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state p {
         margin-bottom: 1.5rem;
     }
 
     @media (max-width: 768px) {
-        .form {
+        .form-container {
             padding: 1.5rem;
         }
 
@@ -203,7 +231,21 @@
 
         .btn {
             width: 100%;
+            justify-content: center;
         }
     }
 </style>
+
+<script>
+document.getElementById('materialForm').addEventListener('submit', function(e) {
+    const lecture = document.getElementById('lecture').value;
+    const resourceType = document.getElementById('resource_type').value;
+    const resourcePath = document.getElementById('resource_path').value;
+
+    if (!lecture || !resourceType || !resourcePath) {
+        e.preventDefault();
+        alert('Пожалуйста, заполните все поля формы');
+    }
+});
+</script>
 {% endblock %} 

@@ -133,91 +133,77 @@
 
         /* Мобильные стили */
         @media (max-width: 768px) {
-            :root {
-                --spacing-xs: 0.25rem;
-                --spacing-sm: 0.5rem;
-                --spacing-md: 1rem;
-                --spacing-lg: 1.5rem;
-                --spacing-xl: 2rem;
-                --header-height: 50px;
-                --footer-height: 50px;
-            }
-
             .container {
-                padding: 0 var(--spacing-sm);
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0 0.5rem !important;
+                margin: 0 !important;
             }
-
-            .btn {
-                padding: 0.5rem 1rem;
-                font-size: 0.9rem;
-            }
-
-            h1 { font-size: 1.8rem; }
-            h2 { font-size: 1.5rem; }
-            h3 { font-size: 1.2rem; }
-            p { font-size: 0.9rem; }
-
             .card {
-                padding: var(--spacing-sm);
-                margin-bottom: var(--spacing-sm);
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0.7rem 0.5rem !important;
+                margin-bottom: 0.7rem !important;
+                border-radius: 16px !important;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.18) !important;
             }
-
-            .navbar {
-                padding: var(--spacing-xs) var(--spacing-sm);
+            main {
+                padding: 0.5rem 0.2rem !important;
+                margin-top: var(--header-height) !important;
+                min-height: unset !important;
             }
-
-            .navbar-brand {
-                font-size: 1.2rem;
+            header {
+                padding: 0 0.5rem !important;
+                height: var(--header-height) !important;
             }
-
-            .table-responsive {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
+            h1 { font-size: 1.3rem !important; }
+            h2 { font-size: 1.1rem !important; }
+            h3 { font-size: 1rem !important; }
+            p, li, td, th, label, .form-label { font-size: 0.97rem !important; }
+            .btn, button, input[type="submit"] {
+                min-width: 80px !important;
+                font-size: 0.95rem !important;
+                padding: 0.6rem 0.7rem !important;
+                min-height: 42px !important;
+                border-radius: 12px !important;
             }
-
-            .form-control {
-                font-size: 16px; /* Предотвращает масштабирование на iOS */
+            .table-container, .table-responsive, table {
+                width: 100% !important;
+                overflow-x: auto !important;
+                display: block !important;
             }
-
-            /* Улучшенные стили для мобильных кнопок */
-            .btn {
-                min-height: 44px; /* Минимальный размер для удобного нажатия */
-                padding: 0.75rem 1.25rem;
+            table {
+                min-width: 480px !important;
             }
-
-            /* Адаптивные изображения */
-            img {
-                max-width: 100%;
-                height: auto;
+            .form-control, input, textarea, select {
+                font-size: 1rem !important;
+                padding: 0.6rem 0.7rem !important;
+                border-radius: 10px !important;
             }
-
-            /* Улучшенная навигация для мобильных устройств */
             .mobile-menu {
                 position: fixed;
                 bottom: 0;
                 left: 0;
                 right: 0;
                 background: var(--background-light);
-                padding: var(--spacing-sm);
+                padding: 0.5rem 0;
                 display: flex;
                 justify-content: space-around;
                 z-index: 1000;
+                border-top: 1px solid rgba(255,255,255,0.07);
             }
-
             .mobile-menu-item {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 color: var(--text-secondary);
                 text-decoration: none;
-                font-size: 0.8rem;
+                font-size: 0.85rem;
             }
-
             .mobile-menu-item i {
                 font-size: 1.2rem;
-                margin-bottom: 0.25rem;
+                margin-bottom: 0.18rem;
             }
-
             .mobile-menu-item.active {
                 color: var(--primary-color);
             }
@@ -225,22 +211,22 @@
 
         /* Дополнительные стили для очень маленьких экранов */
         @media (max-width: 480px) {
-            :root {
-                --spacing-xs: 0.2rem;
-                --spacing-sm: 0.4rem;
-                --spacing-md: 0.8rem;
-                --spacing-lg: 1.2rem;
-                --spacing-xl: 1.6rem;
-            }
-
             .container {
-                padding: 0 var(--spacing-xs);
+                padding: 0 0.2rem !important;
             }
-
-            .btn {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
+            .card {
+                padding: 0.5rem 0.2rem !important;
+                border-radius: 14px !important;
             }
+            .btn, button, input[type="submit"] {
+                font-size: 0.9rem !important;
+                padding: 0.5rem 0.5rem !important;
+                min-height: 40px !important;
+                border-radius: 10px !important;
+            }
+            h1 { font-size: 1.1rem !important; }
+            h2 { font-size: 1rem !important; }
+            h3 { font-size: 0.95rem !important; }
         }
 
         /* Общие компоненты */

@@ -1,10 +1,10 @@
 {% extends "bustComProj/base.html" %}
-{% load custom_filters %}
+{% load myfilters %}
 
 {% block content %}
 <div class="admin-panel">
     <div class="panel-header">
-        <h1 class="panel-title">{{ table_name }}</h1>
+        <h1 class="panel-title">{{ TABLES|get_item:table_name|default:table_name }}</h1>
         <div class="panel-actions">
             <a href="{% url 'add_object' table_name %}" class="btn btn-primary">
                 <i class="fas fa-plus"></i>
@@ -23,7 +23,7 @@
             <thead>
                 <tr>
                     {% for field in fields %}
-                        <th>{{ field|replace_underscores }}</th>
+                        <th>{{ field_labels|get_item:field|default:field|safe }}</th>
                     {% endfor %}
                     <th class="actions-column">Действия</th>
                 </tr>
@@ -32,7 +32,7 @@
                 {% for obj in objects %}
                     <tr>
                         {% for field in fields %}
-                            <td data-label="{{ field|replace_underscores }}">
+                            <td data-label="{{ field_labels|get_item:field|default:field|safe }}">
                                 {% if field == 'profile__role' %}
                                     {% if obj.profile %}{{ obj.profile.role }}{% else %}—{% endif %}
                                 {% elif field == 'last_login' %}

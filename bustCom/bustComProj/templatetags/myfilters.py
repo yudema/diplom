@@ -51,3 +51,13 @@ def replace_underscores(value):
     
     # Делаем первую букву каждого слова заглавной
     return value.title()
+
+@register.filter
+def get_item(dictionary, key):
+    """
+    Возвращает значение по ключу из словаря (для шаблонов).
+    Если dictionary не словарь — возвращает сам ключ.
+    """
+    if isinstance(dictionary, dict):
+        return dictionary.get(key, key)
+    return key 

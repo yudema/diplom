@@ -1,9 +1,10 @@
 {% extends "bustComProj/base.html" %}
+{% load myfilters %}
 
 {% block title %} Редактировать {{ table_name }} {% endblock %}
 
 {% block content %}
-<h1>Редактировать {{ table_name }}</h1>
+<h1>Редактировать {{ TABLES|get_item:table_name|default:table_name }}</h1>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}

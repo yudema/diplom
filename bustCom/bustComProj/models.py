@@ -9,6 +9,10 @@ class Role(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'Роль'
+        verbose_name_plural = 'Роли'
+
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
         if not email:
@@ -38,6 +42,7 @@ class User(AbstractUser):
     
     email = models.EmailField(unique=True)  
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='employee')
+    is_blocked = models.BooleanField(default=False, verbose_name='Заблокирован')
 
     objects = UserManager()  
 
@@ -69,6 +74,10 @@ class User(AbstractUser):
             return f"{self.first_name} {self.last_name}"
         return self.username
 
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
 
 
 
@@ -92,6 +101,10 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = 'Курс'
+        verbose_name_plural = 'Курсы'
+
 
 
 class CourseTeacher(models.Model):
@@ -110,6 +123,10 @@ class Lecture(models.Model):
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name = 'Лекция'
+        verbose_name_plural = 'Лекции'
 
 
 
@@ -148,6 +165,10 @@ class Test(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'Тест'
+        verbose_name_plural = 'Тесты'
+
 
 
 class Question(models.Model):
@@ -156,12 +177,20 @@ class Question(models.Model):
     question_type_choices = [('один', 'Один ответ'), ('несколько', 'Несколько ответов'), ('ввод', 'Ввод текста')]
     question_type = models.CharField(max_length=10, choices=question_type_choices)
 
+    class Meta:
+        verbose_name = 'Вопрос'
+        verbose_name_plural = 'Вопросы'
+
 
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     answer_text = models.TextField()
     is_correct = models.BooleanField()
+
+    class Meta:
+        verbose_name = 'Ответ'
+        verbose_name_plural = 'Ответы'
 
 
 
@@ -229,6 +258,9 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.get_role_display()}"
     
+    class Meta:
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профили'
 
 from django.db import models
 from django.conf import settings
@@ -255,6 +287,10 @@ class Comment(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.lecture.title} - {self.created_at}"
     
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+
 
 
 from django.db import models
