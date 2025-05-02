@@ -187,7 +187,7 @@ def delete_object(request, table_name, object_id):
     return redirect('manage_table', table_name=table_name)
 
 @login_required
-@role_required('teacher')
+@roles_required('teacher', 'training_manager')
 def add_test(request, lecture_id):
     lecture = get_object_or_404(Lecture, id=lecture_id)
 
@@ -204,7 +204,7 @@ def add_test(request, lecture_id):
     return render(request, 'bustComProj/add_test.html', {'form': form, 'lecture': lecture})
 
 @login_required
-@role_required('teacher')
+@roles_required('teacher', 'training_manager')
 def add_question(request, test_id):
     test = get_object_or_404(Test, id=test_id)
 
@@ -221,7 +221,7 @@ def add_question(request, test_id):
     return render(request, 'bustComProj/add_question.html', {'form': form, 'test': test})
 
 @login_required
-@role_required('teacher')
+@roles_required('teacher', 'training_manager')
 def add_answer(request, question_id):
     question = get_object_or_404(Question, id=question_id)
 
@@ -1633,3 +1633,32 @@ def teacher_statistics(request):
     return render(request, 'bustComProj/teacher_statistics.html', {
         'courses_statistics': courses_statistics
     })
+
+@login_required
+@role_required('training_manager')
+def manage_tests(request):
+    """View for training manager to manage tests"""
+    courses = Course.objects.all()
+    selected_course_id = request.GET.get('course')
+    selected_lecture_id = request.GET.get('lecture')
+    
+    lectures = []
+    tests = []
+    
+    if selected_course_id:
+        course = get_object_or_404(Course, id=selected_course_id)
+        lectures = Lecture.objects.filter(course=course).order_by('order_num')
+        
+        if selected_lecture_id:
+            lecture = get_object_or_404(Lecture, id=selected_lecture_id)
+            tests = Test.objects.filter(lecture=lecture)
+    
+    context = {
+        'courses': courses,
+        'lectures': lectures,
+        'tests': tests,
+        'selected_course_id': selected_course_id,
+        'selected_lecture_id': selected_lecture_id,
+    }
+    
+    return render(request, 'bustComProj/manage_tests.html', context)

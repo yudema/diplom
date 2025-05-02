@@ -3,35 +3,56 @@
 {% block title %}Панель управления менеджера обучения{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 class="mb-4">Панель управления менеджера обучения</h1>
-    
-    <div class="grid">
+<div class="container teacher-dashboard fade-in">
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Панель управления менеджера обучения</h1>
+        <div class="dashboard-subtitle">Добро пожаловать! Здесь вы можете управлять обучением сотрудников, тестами и планами.</div>
+    </div>
+    <div class="dashboard-grid">
         <!-- Карточка для плана обучения -->
-        <div class="card">
-            <h2 class="mb-3"><i class="fas fa-clipboard-list"></i> План обучения</h2>
-            <p class="mb-3">Создавайте и управляйте планами обучения для сотрудников.</p>
-            <a href="{% url 'create_training_plan' %}" class="btn">
-                <i class="fas fa-plus"></i> Создать план
-            </a>
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="card-icon"><i class="fas fa-clipboard-list"></i></div>
+                <div>
+                    <div class="card-title">План обучения</div>
+                </div>
+            </div>
+            <div class="card-description">Создавайте и управляйте планами обучения для сотрудников.</div>
+            <div class="card-actions">
+                <a href="{% url 'create_training_plan' %}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Создать план
+                </a>
+            </div>
         </div>
-
         <!-- Карточка для заявок -->
-        <div class="card">
-            <h2 class="mb-3"><i class="fas fa-file-alt"></i> Заявки на обучение</h2>
-            <p class="mb-3">Просмотр и обработка заявок на обучение от сотрудников.</p>
-            <a href="{% url 'review_requests' %}" class="btn">
-                <i class="fas fa-eye"></i> Просмотреть заявки
-            </a>
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="card-icon"><i class="fas fa-file-alt"></i></div>
+                <div>
+                    <div class="card-title">Заявки на обучение</div>
+                </div>
+            </div>
+            <div class="card-description">Просмотр и обработка заявок на обучение от сотрудников.</div>
+            <div class="card-actions">
+                <a href="{% url 'review_requests' %}" class="btn btn-primary">
+                    <i class="fas fa-eye"></i> Просмотреть заявки
+                </a>
+            </div>
         </div>
-
-        <!-- Карточка для настройки тестов -->
-        <div class="card">
-            <h2 class="mb-3"><i class="fas fa-puzzle-piece"></i> Настройка тестов</h2>
-            <p class="mb-3">Управляйте сложностью и параметрами тестирования.</p>
-            <a href="{% url 'test_difficulty' %}" class="btn">
-                <i class="fas fa-cog"></i> Настроить
-            </a>
+        <!-- Карточка для управления тестами -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="card-icon"><i class="fas fa-tasks"></i></div>
+                <div>
+                    <div class="card-title">Управление тестами</div>
+                </div>
+            </div>
+            <div class="card-description">Создавайте и редактируйте тесты для лекций.</div>
+            <div class="card-actions">
+                <a href="{% url 'manage_tests' %}" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Управлять тестами
+                </a>
+            </div>
         </div>
     </div>
 </div>

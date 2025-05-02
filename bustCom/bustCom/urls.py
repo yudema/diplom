@@ -36,6 +36,13 @@ urlpatterns = [
     path('training/edit-plan/<int:plan_id>/', edit_training_plan, name='edit_training_plan'),
     path('training/conduct/', conduct_training, name='conduct_training'),
 
+    path('training-manager/test-difficulty/', test_difficulty, name='test_difficulty'),
+    path('training-manager/review-requests/', review_requests, name='review_requests'),
+    path('training-manager/create-plan/', create_training_plan, name='create_training_plan'),
+    path('training-manager/edit-plan/<int:plan_id>/', edit_training_plan, name='edit_training_plan'),
+    path('training-manager/conduct/', conduct_training, name='conduct_training'),
+    path('training-manager/manage-tests/', manage_tests, name='manage_tests'),
+
     path('dashboard/', dashboard_redirect, name='dashboard_redirect'),
     path('dashboard/employee/', employee_dashboard, name='employee_dashboard'),
     path('dashboard/teacher/', teacher_dashboard, name='teacher_dashboard'),
