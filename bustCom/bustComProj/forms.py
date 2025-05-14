@@ -76,12 +76,10 @@ class ProfileForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super(ProfileForm, self).__init__(*args, **kwargs)
         
-        # Инициализируем поля имени и фамилии данными пользователя
         if self.instance and self.instance.user:
             self.fields['first_name'].initial = self.instance.user.first_name
             self.fields['last_name'].initial = self.instance.user.last_name
             
-        # Если пользователь не админ, убираем поле роли из формы полностью
         if self.user and not self.user.profile.role == 'admin':
             if 'role' in self.fields:
                 del self.fields['role']
@@ -89,7 +87,6 @@ class ProfileForm(forms.ModelForm):
     def save(self, commit=True):
         profile = super(ProfileForm, self).save(commit=False)
         
-        # Обновляем имя и фамилию пользователя
         if hasattr(profile, 'user') and profile.user:
             profile.user.first_name = self.cleaned_data['first_name']
             profile.user.last_name = self.cleaned_data['last_name']

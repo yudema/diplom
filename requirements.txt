@@ -10,3 +10,4 @@ psycopg2-binary>=2.9.9
 gunicorn>=21.2.0
 whitenoise>=6.6.0 
 requests>=2.31.0 
+locust>=2.24.0 

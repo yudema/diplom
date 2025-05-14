@@ -78,11 +78,6 @@ class User(AbstractUser):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
-
-
-
-
-
 class Course(models.Model):
     LEVEL_CHOICES = [
         ('beginner', 'Начальный'),
@@ -322,7 +317,6 @@ def create_user_profile(sender, instance, created, **kwargs):
         Profile.objects.get_or_create(user=instance, defaults={'role': instance.role})
 
 class TrainingPlan(models.Model):
-    """Training plan for employees."""
     STATUS_CHOICES = (
         ('draft', 'Черновик'),
         ('active', 'Активный'),
@@ -347,7 +341,6 @@ class TrainingPlan(models.Model):
 
 
 class ActivityLog(models.Model):
-    """Log of user activities in the system."""
     ACTION_CHOICES = (
         ('запись', 'Запись на курс'),
         ('отчислен', 'Отчисление с курса'),
@@ -379,9 +372,9 @@ class UserGuide(models.Model):
 
 class RecommendationTest(models.Model):
     question = models.TextField()
-    options = models.JSONField()  # Словарь с вариантами ответов
+    options = models.JSONField() 
     correct_answer = models.CharField(max_length=100)
-    skill_category = models.CharField(max_length=50)  # Категория навыка (программирование, дизайн и т.д.)
+    skill_category = models.CharField(max_length=50)  
 
     def __str__(self):
         return self.question

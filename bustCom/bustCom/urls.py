@@ -88,7 +88,6 @@ urlpatterns = [
 
     path('add-lecture-material/', add_lecture_material, name='add_lecture_material'),  
 
-    # Include the app's URLs
     path('', include('bustComProj.urls')),
 ]
 

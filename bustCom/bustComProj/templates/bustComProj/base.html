@@ -209,7 +209,6 @@
             }
         }
 
-        /* Дополнительные стили для очень маленьких экранов */
         @media (max-width: 480px) {
             .container {
                 padding: 0 0.2rem !important;
@@ -229,7 +228,6 @@
             h3 { font-size: 0.95rem !important; }
         }
 
-        /* Общие компоненты */
         .container {
             width: 100%;
             max-width: var(--max-width);
@@ -245,7 +243,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        /* Сброс стандартных стилей */
+        /* Сбро стандартных стилей */
         input, button, textarea, select {
             margin: 0;
             padding: 0;
@@ -260,7 +258,6 @@
             appearance: none;
         }
 
-        /* Обновленные стили для кнопок */
         .btn,
         button[type="submit"],
         input[type="submit"] {
@@ -318,7 +315,6 @@
             box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
         }
 
-        /* Обновленные стили для полей ввода */
         .form-control,
         input[type="text"],
         input[type="password"],
@@ -364,7 +360,6 @@
             color: var(--text-tertiary);
         }
 
-        /* Стили для группы полей */
         .form-group {
             margin-bottom: var(--spacing-md);
             position: relative;
@@ -378,7 +373,6 @@
             transition: all var(--transition-normal);
         }
 
-        /* Стили для input с иконками */
         .input-group {
             position: relative;
             display: flex;
@@ -403,7 +397,6 @@
             color: var(--primary-color);
         }
 
-        /* Стили для состояния ошибки */
         .form-control.is-invalid,
         input.is-invalid {
             border-color: var(--danger-color);
@@ -414,7 +407,6 @@
             box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2);
         }
 
-        /* Стили для disabled состояния */
         .form-control:disabled,
         input:disabled,
         textarea:disabled,
@@ -426,7 +418,6 @@
             pointer-events: none;
         }
 
-        /* Стили для select */
         select {
             width: 100%;
             padding: var(--spacing-sm) var(--spacing-md);
@@ -467,19 +458,16 @@
             padding: var(--spacing-sm);
         }
 
-        /* Стили для disabled состояния select */
         select:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             background-color: rgba(255, 255, 255, 0.02);
         }
 
-        /* Стили для группы с select */
         .form-group select {
             margin-top: var(--spacing-xs);
         }
 
-        /* Стили для select с иконкой */
         .input-group select {
             padding-left: calc(var(--spacing-xl) + var(--spacing-xs));
         }
@@ -488,7 +476,6 @@
             color: var(--primary-color);
         }
 
-        /* Анимации для кнопок */
         @keyframes buttonPulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.02); }
@@ -501,7 +488,6 @@
             animation: buttonPulse 2s infinite;
         }
 
-        /* Анимации для полей ввода */
         @keyframes inputFocus {
             0% { transform: scale(1); }
             50% { transform: scale(1.02); }
@@ -513,7 +499,6 @@
             animation: inputFocus 0.3s ease-out;
         }
 
-        /* Сообщения */
         .message {
             padding: var(--spacing-sm);
             border-radius: var(--border-radius);
@@ -532,7 +517,6 @@
             color: #ff0000;
         }
 
-        /* Таблицы */
         .table-container {
             overflow-x: auto;
             margin-bottom: var(--spacing-md);
@@ -561,14 +545,12 @@
             background-color: rgba(255, 255, 255, 0.05);
         }
 
-        /* Сетка */
         .grid {
             display: grid;
             gap: var(--spacing-md);
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         }
 
-        /* Утилиты */
         .text-center { text-align: center; }
         .text-right { text-align: right; }
         .mb-1 { margin-bottom: var(--spacing-xs); }
@@ -580,7 +562,6 @@
         .mt-3 { margin-top: var(--spacing-md); }
         .mt-4 { margin-top: var(--spacing-lg); }
 
-        /* Обновленные стили для ссылок */
         a {
             color: var(--primary-color);
             text-decoration: none;
@@ -610,7 +591,6 @@
             transform-origin: left;
         }
 
-        /* Обновленные стили для select */
         select.form-control {
             appearance: none;
             background-image: linear-gradient(45deg, transparent 50%, var(--primary-color) 50%),
@@ -623,7 +603,6 @@
             padding-right: var(--spacing-xl);
         }
 
-        /* Обновленные стили для checkbox и radio */
         input[type="checkbox"],
         input[type="radio"] {
             appearance: none;
@@ -670,14 +649,12 @@
             transform: translate(-50%, -50%);
         }
 
-        /* Обновленные стили для textarea */
         textarea.form-control {
             min-height: 120px;
             resize: vertical;
             line-height: 1.6;
         }
 
-        /* Стили для disabled состояний */
         .btn:disabled,
         .form-control:disabled {
             opacity: 0.6;
@@ -689,7 +666,6 @@
             box-shadow: none;
         }
 
-        /* Стили для состояния ошибки */
         .form-control.is-invalid {
             border-color: var(--danger-color);
         }
@@ -704,7 +680,6 @@
             margin-top: var(--spacing-xs);
         }
 
-        /* Общие стили для кнопок-ссылок */
         .btn-link {
             display: inline-flex;
             align-items: center;
@@ -731,7 +706,6 @@
             font-size: 1.1em;
         }
 
-        /* Стили для кнопки "Назад" */
         .btn-back {
             background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
             color: white;
@@ -741,7 +715,6 @@
             background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
         }
 
-        /* Стили для кнопки теста */
         .btn-test {
             background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
             color: white;
@@ -754,7 +727,6 @@
 </head>
 <body>
     <div id="root">
-        <!-- Хедер -->
         <header>
             <a href="{% url 'home' %}" class="logo">BustCom</a>
             {% if user.is_authenticated %}
@@ -778,7 +750,6 @@
             </button>
         </header>
 
-        <!-- Основной контент -->
         <main>
             {% if messages %}
                 {% for message in messages %}
@@ -791,7 +762,6 @@
             {% block content %}{% endblock %}
         </main>
 
-        <!-- Подвал -->
         <footer>
             <p>© 2025 BustCom. Все права защищены.</p>
         </footer>

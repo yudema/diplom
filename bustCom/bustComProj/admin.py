@@ -41,7 +41,6 @@ class CustomUserAdmin(admin.ModelAdmin):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
-# Регистрируем остальные модели с русскими названиями
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'phone', 'company')

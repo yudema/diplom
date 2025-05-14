@@ -1,12 +1,10 @@
 from pathlib import Path
 
-# 🔹 Базовая конфигурация проекта
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-yc6#faw=i_d9x88z@r$at--5!1+qf72(y)ay=i1b#j!r^6u+o)'
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
-# 🔹 Установленные приложения
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -17,7 +15,6 @@ INSTALLED_APPS = [
     'bustComProj',
 ]
 
-# 🔹 Middleware (посредники)
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -28,11 +25,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# 🔹 Основной конфиг Django
 ROOT_URLCONF = 'bustCom.urls'
 WSGI_APPLICATION = 'bustCom.wsgi.application'
 
-# 🔹 Шаблоны
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -49,7 +44,6 @@ TEMPLATES = [
     },
 ]
 
-# 🔹 База данных (SQLite, можно заменить на PostgreSQL/MySQL)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -57,26 +51,20 @@ DATABASES = {
     }
 }
 
-# 🔹 Локализация
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# 🔹 Пути для статики
 STATIC_URL = 'static/'
 
-# 🔹 Пользовательская модель
 AUTH_USER_MODEL = 'bustComProj.User'
 
-# 🔹 Настройки аутентификации и сессий
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
-SESSION_COOKIE_AGE = 86400  # 1 день (24 часа)
-SESSION_SAVE_EVERY_REQUEST = True  # Продление сессии при каждом запросе
+SESSION_COOKIE_AGE = 86400  
+SESSION_SAVE_EVERY_REQUEST = True  
 
-# 🔹 Отключение проверки сложности пароля (пароль может быть 123)
 AUTH_PASSWORD_VALIDATORS = []
 
-# 🔹 Автоинкремент для первичных ключей
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

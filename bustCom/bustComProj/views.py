@@ -37,13 +37,11 @@ from .decorators import role_required
 from .telegram_utils import notify_training_request
 
 def role_required(role):
-    """Декоратор для проверки роли пользователя"""
     def check_role(user):
         return user.is_authenticated and getattr(user.profile, 'role', '').lower() == role.lower()
     return user_passes_test(check_role)
 
 def roles_required(*roles):
-    """Декоратор для проверки нескольких ролей"""
     def check_role(user):
         return user.is_authenticated and getattr(user.profile, 'role', None) in roles
     return user_passes_test(check_role)
@@ -89,7 +87,6 @@ FIELD_LABELS = {
     'profile__role': 'Роль',
     'last_login': 'Последний вход',
     'is_active': 'Статус',
-    # Добавьте остальные поля по необходимости
 }
 
 ROLE_DASHBOARD = {
@@ -112,17 +109,13 @@ def manage_table(request, table_name):
 
     objects = model._default_manager.all()
     
-    # Получаем поля модели
     if table_name == 'users':
-        # Для пользователей показываем только важные поля - убрано is_active для более компактного вида
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile__role', 'last_login']
         
-        # Если поле profile__role не доступно напрямую, обрабатываем это в шаблоне
         objects = objects.select_related('profile')
     else:
         fields = [field.name for field in model._meta.get_fields() 
                  if not field.is_relation or field.one_to_one or field.many_to_one]
-        # Исключаем служебные поля
         fields = [f for f in fields if not (f.startswith('_') or f in ['password', 'logentry'])]
         
     object_values = objects.values_list()
@@ -278,19 +271,15 @@ def lecture_test(request, lecture_id, test_id):
 
 @login_required
 def courses_list(request):
-    # Получаем все курсы
     all_courses = Course.objects.all().order_by('title')
     
-    # Получаем курсы пользователя
     user_courses = Course.objects.filter(enrollment__user=request.user)
     
-    # Получаем рекомендованные курсы на основе результатов теста
     user_skills = UserRecommendationTestResult.objects.filter(
         user=request.user,
         is_correct=True
     ).values_list('test__skill_category', flat=True)
     
-    # Если у пользователя есть результаты теста, рекомендуем курсы на их основе
     if user_skills:
         recommended_courses = Course.objects.filter(
             level__in=['beginner', 'intermediate']
@@ -298,7 +287,6 @@ def courses_list(request):
             enrollment__user=request.user
         )[:5]
     else:
-        # Если тест не пройден, рекомендуем начальные курсы
         recommended_courses = Course.objects.filter(
             level='beginner'
         ).exclude(
@@ -324,6 +312,40 @@ def course_detail(request, course_id):
         'is_enrolled': is_enrolled
     })
 
+def course_detail(request, course_id):
+    course = Course.objects.get(id=course_id)
+    lectures = Lecture.objects.filter(course_id=course_id).order_by('order_num')
+    
+    enrolled = False
+    if request.user.is_authenticated:
+        enrolled = Enrollment.objects.filter(user=request.user, course=course).exists()
+    
+    user_progress = None
+    if enrolled:
+        completed_lectures = CompletedLecture.objects.filter(
+            user=request.user, 
+            lecture__course=course
+        ).values_list('lecture_id', flat=True)
+        
+        lecture_count = lectures.count()
+        completed_count = len(completed_lectures)
+        
+        if lecture_count > 0:
+            progress_percentage = int((completed_count / lecture_count) * 100)
+        else:
+            progress_percentage = 0
+            
+        user_progress = {
+            'completed_lectures': completed_lectures,
+            'progress_percentage': progress_percentage
+        }
+    
+    return render(request, 'course_detail.html', {
+        'course': course,
+        'lectures': lectures,
+        'enrolled': enrolled,
+        'user_progress': user_progress
+    })
 @login_required
 def course_lectures(request, course_id):
     course = get_object_or_404(Course, id=course_id)
@@ -473,9 +495,7 @@ def login_view(request):
                 return render(request, 'bustComProj/login.html')
                 
             login(request, user)
-            # Get or create profile
             profile, created = Profile.objects.get_or_create(user=user)
-            # Only show guide and test for employees who haven't seen it
             if profile.role == 'employee' and not profile.has_seen_guide:
                 return redirect('first_login_guide')
             return redirect('dashboard_redirect')
@@ -492,7 +512,6 @@ def logout_view(request):
 def enroll_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     
-    # Если пользователь не сотрудник, используем старую логику
     if request.user.profile.role != 'employee':
         enrollment, created = Enrollment.objects.get_or_create(user=request.user, course=course)
         if created:
@@ -500,14 +519,12 @@ def enroll_course(request, course_id):
         else:
             messages.info(request, f"Вы уже записаны на этот курс!")
     else:
-        # Проверка на существующую заявку
         existing_request = TrainingRequest.objects.filter(
             user=request.user, 
             course=course, 
             status__in=['pending', 'approved']
         ).exists()
         
-        # Проверка на существующую запись
         already_enrolled = Enrollment.objects.filter(user=request.user, course=course).exists()
         
         if already_enrolled:
@@ -515,13 +532,11 @@ def enroll_course(request, course_id):
         elif existing_request:
             messages.info(request, f"Вы уже подали заявку на этот курс!")
         else:
-            # Создаем заявку на обучение
             training_request = TrainingRequest.objects.create(
                 user=request.user,
                 course=course,
                 reason="Заявка от сотрудника"
             )
-            # Отправляем уведомление в Telegram
             notify_training_request(training_request)
             messages.success(request, f"Заявка на курс '{course.title}' успешно отправлена и ожидает подтверждения.")
 
@@ -557,10 +572,8 @@ def dashboard_view(request):
 @login_required
 @role_required('employee')
 def employee_dashboard(request):
-    # Получаем курсы пользователя
     user_courses = Course.objects.filter(enrollment__user=request.user)
     
-    # Собираем статистику по курсам
     completed_courses_count = 0
     total_courses = user_courses.count()
     
@@ -570,7 +583,6 @@ def employee_dashboard(request):
     total_attempts = 0
     
     for course in user_courses:
-        # Вычисляем прогресс по лекциям
         total_lectures = Lecture.objects.filter(course=course).count()
         if total_lectures > 0:
             completed_lectures = CompletedLecture.objects.filter(
@@ -585,7 +597,6 @@ def employee_dashboard(request):
             progress_percentage = 0
             completed_lectures = 0
         
-        # Собираем информацию о тестах
         course_tests = Test.objects.filter(lecture__course=course)
         course_test_attempts = TestAttempt.objects.filter(
             user=request.user,
@@ -595,13 +606,11 @@ def employee_dashboard(request):
         course_total_attempts = course_test_attempts.count()
         total_tests_taken += course_total_attempts
         
-        # Суммируем баллы для подсчета среднего
         if course_total_attempts > 0:
             course_score_sum = course_test_attempts.aggregate(Sum('score'))['score__sum'] or 0
             total_score_sum += course_score_sum
             total_attempts += course_total_attempts
         
-        # Создаем объект с данными курса и его прогрессом
         course_data = {
             'course': course,
             'progress_percentage': progress_percentage,
@@ -610,7 +619,6 @@ def employee_dashboard(request):
         }
         courses_with_progress.append(course_data)
     
-    # Вычисляем средний балл
     avg_score = round(total_score_sum / total_attempts, 1) if total_attempts > 0 else 0
     
     context = {
@@ -631,8 +639,6 @@ def teacher_dashboard(request):
 @login_required
 @role_required('hr')
 def hr_dashboard(request):
-    """HR manager's dashboard."""
-    # Получаем последние активности из логов
     recent_activities = ActivityLog.objects.all().order_by('-log_time')[:10]
     
     context = {
@@ -707,7 +713,6 @@ def review_requests(request):
 
         if action == 'approve':
             training_request.status = 'approved'
-            # При одобрении заявки автоматически создаем запись о зачислении
             Enrollment.objects.get_or_create(
                 user=training_request.user,
                 course=training_request.course
@@ -741,11 +746,10 @@ def create_training_plan(request):
             description = request.POST.get('description')
             start_date = request.POST.get('start_date')
             end_date = request.POST.get('end_date')
-            status = request.POST.get('status', 'draft')  # Получаем статус, по умолчанию 'draft'
+            status = request.POST.get('status', 'draft')  
             courses = request.POST.getlist('courses')
             employees = request.POST.getlist('employees')
             
-            # Проверяем, что обязательные поля не пустые
             if not title or not description or not start_date or not end_date:
                 messages.error(request, 'Пожалуйста, заполните все обязательные поля')
                 return redirect('create_training_plan')
@@ -756,19 +760,15 @@ def create_training_plan(request):
                     description=description,
                     start_date=start_date,
                     end_date=end_date,
-                    status=status,  # Добавляем статус в создание плана
+                    status=status,  
                     created_by=request.user
                 )
                 
-                # Добавляем курсы, если они выбраны
                 if courses:
-                    # Преобразуем строковые ID в целые числа
                     course_ids = [int(course_id) for course_id in courses]
                     plan.courses.set(course_ids)
                 
-                # Добавляем сотрудников, если они выбраны
                 if employees:
-                    # Преобразуем строковые ID в целые числа
                     employee_ids = [int(employee_id) for employee_id in employees]
                     plan.employees.set(employee_ids)
                 
@@ -792,7 +792,6 @@ def edit_training_plan(request, plan_id):
     plan = get_object_or_404(TrainingPlan, id=plan_id)
     
     if request.method == 'POST':
-        # Проверка и получение всех необходимых данных формы
         title = request.POST.get('title')
         description = request.POST.get('description')
         start_date = request.POST.get('start_date')
@@ -801,32 +800,27 @@ def edit_training_plan(request, plan_id):
         courses = request.POST.getlist('courses')
         employees = request.POST.getlist('employees')
         
-        # Проверяем, что обязательные поля не пустые
         if not title or not description or not start_date or not end_date:
             messages.error(request, 'Пожалуйста, заполните все обязательные поля')
             return redirect('edit_training_plan', plan_id=plan_id)
         
         try:
-            # Обновляем данные плана
             plan.title = title
             plan.description = description
             plan.start_date = start_date
             plan.end_date = end_date
             plan.status = status
-            plan.save()  # Сохраняем изменения в базе данных
+            plan.save()  
             
-            # Обновляем связанные курсы и сотрудников
-            plan.courses.clear()  # Удаляем старые связи с курсами
-            if courses:  # Проверяем, что список курсов не пустой
-                # Преобразуем строковые ID в целые числа
+            plan.courses.clear() 
+            if courses:  
                 course_ids = [int(course_id) for course_id in courses]
-                plan.courses.set(course_ids)  # Устанавливаем новые связи
+                plan.courses.set(course_ids)  
             
-            plan.employees.clear()  # Удаляем старые связи с сотрудниками
-            if employees:  # Проверяем, что список сотрудников не пустой
-                # Преобразуем строковые ID в целые числа
+            plan.employees.clear()  
+            if employees: 
                 employee_ids = [int(employee_id) for employee_id in employees]
-                plan.employees.set(employee_ids)  # Устанавливаем новые связи
+                plan.employees.set(employee_ids)  
             
             messages.success(request, 'План обучения успешно обновлен')
             return redirect('create_training_plan')
@@ -834,7 +828,6 @@ def edit_training_plan(request, plan_id):
             messages.error(request, f'Ошибка при обновлении плана: {str(e)}')
             return redirect('edit_training_plan', plan_id=plan_id)
     
-    # Получаем данные для формы
     courses = Course.objects.all()
     employees = get_user_model().objects.filter(profile__role='employee')
     
@@ -964,31 +957,26 @@ def view_certificates(request):
 def download_certificate(request, certificate_id):
     certificate = get_object_or_404(Certificate, id=certificate_id, user=request.user)
     
-    # Получаем полное имя пользователя
     user_full_name = f"{certificate.user.first_name} {certificate.user.last_name}".strip()
-    if not user_full_name:  # Если имя пустое, используем username
+    if not user_full_name: 
         user_full_name = certificate.user.username
     
-    # Создаем изображение (A4 landscape в пикселях при 300 DPI)
-    width = int(11.69 * 300)  # A4 width in inches * 300 DPI
-    height = int(8.27 * 300)  # A4 height in inches * 300 DPI
+
+    width = int(11.69 * 300)  
+    height = int(8.27 * 300)  
     
-    # Создаем новое изображение с темным фоном
-    image = Image.new('RGB', (width, height), '#1a1a1a')  # Темно-серый фон
+    image = Image.new('RGB', (width, height), '#1a1a1a') 
     draw = ImageDraw.Draw(image)
     
-    # Рисуем декоративную рамку
     border_width = 5
-    cyan_color = '#00FFFF'  # Голубой цвет
+    cyan_color = '#00FFFF'  
     
-    # Внешняя рамка (голубая)
     draw.rectangle(
         [(border_width, border_width), (width - border_width, height - border_width)],
         outline=cyan_color,
         width=border_width
     )
     
-    # Внутренняя рамка
     margin = 50
     draw.rectangle(
         [(margin, margin), (width - margin, height - margin)],
@@ -997,78 +985,62 @@ def download_certificate(request, certificate_id):
     )
     
     try:
-        # Попытка использовать системный шрифт Arial
         title_font_size = 120
         normal_font_size = 70
         small_font_size = 50
-        name_font_size = 100  # Увеличили размер шрифта для имени
+        name_font_size = 100  
         
         title_font = ImageFont.truetype("arial.ttf", title_font_size)
         normal_font = ImageFont.truetype("arial.ttf", normal_font_size)
         small_font = ImageFont.truetype("arial.ttf", small_font_size)
         name_font = ImageFont.truetype("arial.ttf", name_font_size)
     except:
-        # Если Arial недоступен, используем дефолтный шрифт
         title_font = ImageFont.load_default()
         normal_font = ImageFont.load_default()
         small_font = ImageFont.load_default()
         name_font = ImageFont.load_default()
     
-    # Функция для центрирования текста
     def get_text_position(text, font, y_position):
         text_width = font.getlength(text)
         return ((width - text_width) // 2, y_position)
     
-    # Добавляем декоративные линии
     line_y = 180
     line_length = 400
-    # Левая линия
     draw.line([(width//2 - line_length, line_y), (width//2 - 100, line_y)], 
               fill=cyan_color, width=3)
-    # Правая линия
     draw.line([(width//2 + 100, line_y), (width//2 + line_length, line_y)], 
               fill=cyan_color, width=3)
     
-    # Добавляем текст
-    # Заголовок (белый)
     draw.text(get_text_position("СЕРТИФИКАТ", title_font, 200), 
              "СЕРТИФИКАТ", fill='white', font=title_font)
     draw.text(get_text_position("об окончании курса", normal_font, 350), 
              "об окончании курса", fill='white', font=normal_font)
     
-    # Номер сертификата (голубой)
     cert_number = f"№ {certificate.id}"
     draw.text(get_text_position(cert_number, small_font, 450), 
              cert_number, fill=cyan_color, font=small_font)
     
-    # Основной текст (белый)
     draw.text(get_text_position("Настоящим подтверждается, что", normal_font, 600),
              "Настоящим подтверждается, что", fill='white', font=normal_font)
     
-    # Имя участника (голубой, крупный шрифт)
     print(f"Rendering name: {user_full_name}")  # Отладочный вывод
     draw.text(get_text_position(user_full_name, name_font, 700),
              user_full_name, fill=cyan_color, font=name_font)
     
-    # Текст о завершении (белый)
     draw.text(get_text_position("успешно завершил(а) курс", normal_font, 850),
              "успешно завершил(а) курс", fill='white', font=normal_font)
     
-    # Название курса (голубой)
     draw.text(get_text_position(certificate.course.title, normal_font, 950),
              certificate.course.title, fill=cyan_color, font=normal_font)
     
-    # Дата (белый)
     date_text = f"Дата выдачи: {certificate.issued_at.strftime('%d.%m.%Y')}"
     draw.text(get_text_position(date_text, small_font, 1100),
              date_text, fill='white', font=small_font)
     
-    # Сохраняем изображение в буфер
     buffer = BytesIO()
     image.save(buffer, format='PNG', quality=95)
     buffer.seek(0)
     
-    # Отправляем файл
     response = HttpResponse(content_type='image/png')
     response['Content-Disposition'] = f'attachment; filename="certificate_{certificate.id}.png"'
     response.write(buffer.getvalue())
@@ -1088,36 +1060,28 @@ def add_lecture_material(request):
         resource_type = request.POST.get('resource_type')
         resource_path = request.POST.get('resource_path')
 
-        # Проверяем, что все поля заполнены
         if not all([lecture_id, resource_type, resource_path]):
             messages.error(request, 'Пожалуйста, заполните все поля')
         else:
             try:
                 lecture = Lecture.objects.get(id=lecture_id)
-                if lecture.course.teacher != request.user:
-                    messages.error(request, 'У вас нет прав для добавления материалов к этой лекции')
-                else:
-                    LectureResource.objects.create(
-                        lecture=lecture,
-                        resource_type=resource_type,
-                        resource_path=resource_path
-                    )
-                    messages.success(request, 'Материал успешно добавлен')
-                    return redirect('lecture_detail', lecture_id=lecture.id)
+                LectureResource.objects.create(
+                    lecture=lecture,
+                    resource_type=resource_type,
+                    resource_path=resource_path
+                )
+                messages.success(request, 'Материал успешно добавлен')
+                return redirect('lecture_detail', lecture_id=lecture.id)
             except Lecture.DoesNotExist:
                 messages.error(request, 'Лекция не найдена')
 
-        # Получаем список лекций для формы
-        courses = Course.objects.filter(teacher=request.user)
-        lectures = Lecture.objects.filter(course__in=courses).order_by('course__title', 'order_num')
-
+        lectures = Lecture.objects.all().order_by('course__title', 'order_num')
         return render(request, 'bustComProj/add_lecture_material.html', {
             'lectures': lectures,
             'title': 'Добавить материал к лекции'
         })
     else:
-        courses = Course.objects.filter(teacher=request.user)
-        lectures = Lecture.objects.filter(course__in=courses).order_by('course__title', 'order_num')
+        lectures = Lecture.objects.all().order_by('course__title', 'order_num')
         return render(request, 'bustComProj/add_lecture_material.html', {
             'lectures': lectures,
             'title': 'Добавить материал к лекции'
@@ -1126,14 +1090,12 @@ def add_lecture_material(request):
 @login_required
 @role_required('hr')
 def assign_courses(request):
-    """Assign courses to employees."""
     User = get_user_model()
     employees = User.objects.filter(profile__role='employee')
     courses = Course.objects.all()
     
     if request.method == 'POST':
         if 'action' in request.POST and request.POST['action'] == 'delete':
-            # Удаление назначения
             enrollment_id = request.POST.get('enrollment_id')
             try:
                 enrollment = Enrollment.objects.get(id=enrollment_id)
@@ -1141,7 +1103,6 @@ def assign_courses(request):
                 course = enrollment.course
                 enrollment.delete()
                 
-                # Добавляем запись в журнал активностей
                 ActivityLog.objects.create(
                     user=user,
                     course=course,
@@ -1154,7 +1115,6 @@ def assign_courses(request):
                 messages.error(request, 'Назначение не найдено.')
         
         elif 'action' in request.POST and request.POST['action'] == 'update_status':
-            # Обновление статуса
             enrollment_id = request.POST.get('enrollment_id')
             new_status = request.POST.get('status')
             
@@ -1164,10 +1124,8 @@ def assign_courses(request):
                 enrollment.status = new_status
                 enrollment.save()
                 
-                # Определяем тип действия в зависимости от статуса
                 action_type = 'завершение' if new_status == 'завершён' else 'прогресс' if new_status == 'в процессе' else 'отчислен'
                 
-                # Добавляем запись в журнал активностей
                 ActivityLog.objects.create(
                     user=enrollment.user,
                     course=enrollment.course,
@@ -1180,7 +1138,6 @@ def assign_courses(request):
                 messages.error(request, 'Назначение не найдено.')
         
         else:
-            # Новое назначение
             employee_id = request.POST.get('employee')
             course_id = request.POST.get('course')
             
@@ -1189,14 +1146,12 @@ def assign_courses(request):
                     employee = User.objects.get(id=employee_id)
                     course = Course.objects.get(id=course_id)
                     
-                    # Проверяем, существует ли уже такое назначение
                     if not Enrollment.objects.filter(user=employee, course=course).exists():
                         enrollment = Enrollment.objects.create(
                             user=employee, 
                             course=course
                         )
                         
-                        # Добавляем запись в журнал активностей
                         ActivityLog.objects.create(
                             user=employee,
                             course=course,
@@ -1210,7 +1165,6 @@ def assign_courses(request):
                 except (User.DoesNotExist, Course.DoesNotExist):
                     messages.error(request, 'Сотрудник или курс не найден.')
     
-    # Автоматическое обновление статусов курсов на основе прогресса
     enrollments = Enrollment.objects.all().select_related('user', 'course')
     for enrollment in enrollments:
         if enrollment.status != 'завершён':
@@ -1226,7 +1180,6 @@ def assign_courses(request):
                     enrollment.status = 'завершён'
                     enrollment.save()
                     
-                    # Добавляем запись в журнал активностей
                     ActivityLog.objects.create(
                         user=enrollment.user,
                         course=enrollment.course,
@@ -1234,7 +1187,6 @@ def assign_courses(request):
                         details=f"Автоматическое обновление статуса с '{old_status}' на 'завершён'"
                     )
     
-    # Получаем обновленные списки
     enrollments = Enrollment.objects.all().select_related('user', 'course')
     recent_activities = ActivityLog.objects.all().order_by('-log_time')[:10]
     
@@ -1349,7 +1301,6 @@ def hr_view_requests(request):
     
     training_requests = TrainingRequest.objects.all().select_related('user', 'course').order_by('-created_at')
     
-    # Обработка фильтрации и поиска
     status_filter = request.GET.get('status', None)
     search_query = request.GET.get('search', None)
     
@@ -1364,7 +1315,6 @@ def hr_view_requests(request):
             Q(course__title__icontains=search_query)
         )
     
-    # Возможность действий с заявками
     if request.method == 'POST':
         request_id = request.POST.get('request_id')
         action = request.POST.get('action')
@@ -1373,7 +1323,6 @@ def hr_view_requests(request):
 
         if action == 'approve':
             training_request.status = 'approved'
-            # При одобрении заявки автоматически создаем запись о зачислении
             Enrollment.objects.get_or_create(
                 user=training_request.user,
                 course=training_request.course
@@ -1399,16 +1348,12 @@ def manage_employees(request):
     User = get_user_model()
     employees = User.objects.filter(profile__role='employee').select_related('profile')
     
-    # Получаем статистику по каждому сотруднику
     employees_data = []
     for employee in employees:
-        # Количество назначенных курсов
         assigned_courses = Enrollment.objects.filter(user=employee).count()
         
-        # Количество завершенных курсов
         completed_courses = Enrollment.objects.filter(user=employee, status='завершён').count()
         
-        # Средний прогресс по всем курсам
         enrollments = Enrollment.objects.filter(user=employee)
         total_progress = 0
         for enrollment in enrollments:
@@ -1423,7 +1368,6 @@ def manage_employees(request):
         
         avg_progress = total_progress / assigned_courses if assigned_courses > 0 else 0
         
-        # Средний балл по тестам
         test_attempts = TestAttempt.objects.filter(user=employee)
         avg_score = test_attempts.aggregate(Avg('score'))['score__avg'] or 0
         
@@ -1443,13 +1387,11 @@ def manage_employees(request):
 
 @login_required
 def user_guide(request):
-    # Check if user is an employee
     if request.user.profile.role != 'employee':
         return redirect('dashboard_redirect')
         
-    guide = UserGuide.objects.first()  # Получаем первое руководство
+    guide = UserGuide.objects.first()  
     if not guide:
-        # Создаем руководство по умолчанию
         guide = UserGuide.objects.create(
             title="Добро пожаловать в BustCom!",
             content="""
@@ -1492,7 +1434,6 @@ def user_guide(request):
             """
         )
     
-    # Проверяем, прошел ли пользователь руководство
     guide_progress, created = UserGuideProgress.objects.get_or_create(
         user=request.user,
         guide=guide
@@ -1508,17 +1449,14 @@ def user_guide(request):
 
 @login_required
 def recommendation_test(request):
-    # Check if user is an employee
     if request.user.profile.role != 'employee':
         return redirect('dashboard_redirect')
         
-    # Проверяем, прошел ли пользователь тест
     if UserRecommendationTestResult.objects.filter(user=request.user).exists():
         return redirect('courses_list')
     
     questions = RecommendationTest.objects.all()
     if not questions.exists():
-        # Создаем тест по умолчанию
         questions = [
             RecommendationTest.objects.create(
                 question="Какой тип задач вам больше нравится?",
@@ -1542,7 +1480,6 @@ def recommendation_test(request):
                 correct_answer="a",
                 skill_category="programming"
             ),
-            # Добавьте больше вопросов по необходимости
         ]
     
     if request.method == 'POST':
@@ -1559,7 +1496,6 @@ def recommendation_test(request):
                     answer=answer,
                     is_correct=answer == question.correct_answer
                 )
-            # Mark guide as seen after completing the test
             profile = request.user.profile
             profile.has_seen_guide = True
             profile.save()
@@ -1568,7 +1504,6 @@ def recommendation_test(request):
             messages.error(request, 'Произошла ошибка при сохранении ответов. Пожалуйста, попробуйте снова.')
             return render(request, 'bustComProj/recommendation_test.html', {'questions': questions})
     
-    # Преобразуем options из JSON в словарь для каждого вопроса
     for question in questions:
         question.options = json.loads(question.options)
     
@@ -1583,20 +1518,15 @@ def first_login_guide(request):
 @login_required
 @role_required('teacher')
 def teacher_statistics(request):
-    """View for teacher to see statistics about their students' performance"""
-    # Get courses taught by this teacher
     teacher_courses = Course.objects.filter(teacher=request.user)
     
     courses_statistics = []
     for course in teacher_courses:
-        # Get all enrollments for this course
         enrollments = Enrollment.objects.filter(course=course)
         
-        # Calculate course statistics
         total_students = enrollments.count()
         completed_count = enrollments.filter(status='завершён').count()
         
-        # Calculate average progress
         total_lectures = Lecture.objects.filter(course=course).count()
         course_progress = []
         
@@ -1611,7 +1541,6 @@ def teacher_statistics(request):
         
         avg_progress = sum(course_progress) / len(course_progress) if course_progress else 0
         
-        # Get test statistics
         course_tests = Test.objects.filter(lecture__course=course)
         test_attempts = TestAttempt.objects.filter(test__in=course_tests)
         
@@ -1662,3 +1591,24 @@ def manage_tests(request):
     }
     
     return render(request, 'bustComProj/manage_tests.html', context)
+
+@login_required
+def my_courses(request):
+    """
+    View for displaying courses that the current user is enrolled in
+    """
+    enrollments = Enrollment.objects.filter(user=request.user).select_related('course')
+    courses = [enrollment.course for enrollment in enrollments]
+    
+    for course in courses:
+        # Calculate progress for each course
+        total_lectures = Lecture.objects.filter(course=course).count()
+        completed_lectures = CompletedLecture.objects.filter(
+            user=request.user,
+            lecture__course=course
+        ).count()
+        course.progress = (completed_lectures / total_lectures * 100) if total_lectures > 0 else 0
+    
+    return render(request, 'bustComProj/my_courses.html', {
+        'courses': courses
+    })

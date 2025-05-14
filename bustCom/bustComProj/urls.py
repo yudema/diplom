@@ -2,21 +2,19 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    # HR-панель и связанные маршруты
     path('dashboard/hr/', views.hr_dashboard, name='hr_dashboard'),
     path('dashboard/hr/manage_employees/', views.manage_employees, name='manage_employees'),
     path('dashboard/hr/assign_courses/', views.assign_courses, name='assign_courses'),
     path('dashboard/hr/track_performance/', views.track_performance, name='track_performance'),
     path('dashboard/hr/evaluate_training/', views.evaluate_training, name='evaluate_training'),
     path('dashboard/hr/view_requests/', views.hr_view_requests, name='hr_view_requests'),
-    
-    # Основные маршруты
     path('', views.home, name='home'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('register/', views.register, name='register'),
     path('dashboard/redirect/', views.dashboard_redirect, name='dashboard_redirect'),
     path('courses/', views.courses_list, name='courses_list'),
+    path('my-courses/', views.my_courses, name='my_courses'),
     path('course/<int:course_id>/', views.course_detail, name='course_detail'),
     path('course/<int:course_id>/lectures/', views.course_lectures, name='course_lectures'),
     path('lecture/<int:lecture_id>/', views.lecture_detail, name='lecture_detail'),

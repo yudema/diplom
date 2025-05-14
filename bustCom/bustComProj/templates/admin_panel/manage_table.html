@@ -174,7 +174,6 @@
         background-color: #cc0000;
     }
     
-    /* Компактный вид */
     .compact-view th, .compact-view td {
         padding: 3px 6px;
         font-size: 0.8rem;
@@ -191,7 +190,6 @@
         margin: 1px;
     }
     
-    /* Устанавливаем более узкие столбцы для некоторых полей */
     th:nth-child(1), td:nth-child(1) {
         width: 40px;
         min-width: 40px;
@@ -201,17 +199,14 @@
         width: 110px;
     }
     
-    /* Установить минимальную ширину для названий пользователей */
     th:contains("Username"), td:nth-child(2) {
         min-width: 80px;
     }
     
-    /* Email должен быть достаточно широким для отображения адресов */
     th:contains("Email"), td:nth-child(3) {
         min-width: 150px;
     }
     
-    /* Для роли нужно меньше места */
     th:contains("Role"), td:nth-child(6) {
         width: 80px;
     }
@@ -298,7 +293,6 @@
     document.addEventListener('DOMContentLoaded', function() {
         const toggleButton = document.getElementById('toggle-view');
         if (toggleButton) {
-            // Для таблицы пользователей компактный вид по умолчанию
             if (document.querySelector('table').classList.contains('compact-view')) {
                 toggleButton.innerHTML = '<i class="fas fa-expand"></i> Полный вид';
             }
