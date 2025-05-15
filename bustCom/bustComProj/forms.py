@@ -21,14 +21,20 @@ class CustomUserChangeForm(UserChangeForm):
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'role')
+        fields = ('username', 'email', 'first_name', 'last_name')
         labels = {
             'username': 'Логин',
             'email': 'Email',
             'first_name': 'Имя',
             'last_name': 'Фамилия',
-            'role': 'Роль',
         }
+        
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.role = 'employee'
+        if commit:
+            user.save()
+        return user
 
 class CourseForm(forms.ModelForm):
     class Meta:
@@ -72,7 +78,6 @@ class ProfileForm(forms.ModelForm):
         fields = ['first_name', 'last_name', 'phone', 'company']
         
     def __init__(self, *args, **kwargs):
-        # Получаем пользователя из kwargs, чтобы проверить его роль
         self.user = kwargs.pop('user', None)
         super(ProfileForm, self).__init__(*args, **kwargs)
         

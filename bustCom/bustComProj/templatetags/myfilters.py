@@ -5,12 +5,8 @@ register = template.Library()
 
 @register.filter
 def getattr_custom(obj, attr):
-    """
-    Возвращает значение атрибута объекта, поддерживает вложенные атрибуты.
-    Например: getattr_custom(obj, 'profile__role')
-    """
+
     if '__' in attr:
-        # Если атрибут содержит '__', обрабатываем его как вложенный атрибут
         attrs = attr.split('__')
         value = obj
         
@@ -24,7 +20,6 @@ def getattr_custom(obj, attr):
                 
         return value
     else:
-        # Обычный атрибут
         try:
             attr_value = getattr(obj, attr)
             if callable(attr_value):
@@ -35,29 +30,20 @@ def getattr_custom(obj, attr):
 
 @register.filter
 def replace_underscores(value):
-    """
-    Заменяет подчеркивания на пробелы и делает каждое слово с заглавной буквы.
-    Например: 'first_name' -> 'First Name'
-    """
+
     if not value:
         return ""
     
-    # Заменяем подчеркивания на пробелы
     value = re.sub(r'_+', ' ', str(value))
     
-    # Для полей с двойным подчеркиванием (profile__role) берем только часть после последнего __
     if '__' in value:
         value = value.split('__')[-1]
     
-    # Делаем первую букву каждого слова заглавной
     return value.title()
 
 @register.filter
 def get_item(dictionary, key):
-    """
-    Возвращает значение по ключу из словаря (для шаблонов).
-    Если dictionary не словарь — возвращает сам ключ.
-    """
+
     if isinstance(dictionary, dict):
         return dictionary.get(key, key)
     return key 

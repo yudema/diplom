@@ -1208,7 +1208,6 @@ def test_difficulty(request):
 @login_required
 @role_required('admin')
 def download_backup(request):
-    """Создает и отправляет резервную копию базы данных"""
     db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'db.sqlite3')
     
     timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
@@ -1232,13 +1231,11 @@ def download_backup(request):
             pass
 
 class RestoreBackupForm(Form):
-    """Форма для загрузки файла бэкапа"""
     backup_file = FileField(label='Файл бэкапа')
 
 @login_required
 @role_required('admin')
 def restore_backup(request):
-    """Восстанавливает базу данных из загруженного бэкапа"""
     if request.method == 'POST':
         form = RestoreBackupForm(request.POST, request.FILES)
         if form.is_valid():
@@ -1297,8 +1294,6 @@ def my_requests(request):
 @login_required
 @role_required('hr')
 def hr_view_requests(request):
-    """Позволяет HR-менеджеру просматривать все заявки сотрудников на обучение."""
-    
     training_requests = TrainingRequest.objects.all().select_related('user', 'course').order_by('-created_at')
     
     status_filter = request.GET.get('status', None)
@@ -1344,7 +1339,6 @@ def hr_view_requests(request):
 @login_required
 @role_required('hr')
 def manage_employees(request):
-    """Страница управления сотрудниками для HR-менеджера"""
     User = get_user_model()
     employees = User.objects.filter(profile__role='employee').select_related('profile')
     
@@ -1566,7 +1560,6 @@ def teacher_statistics(request):
 @login_required
 @role_required('training_manager')
 def manage_tests(request):
-    """View for training manager to manage tests"""
     courses = Course.objects.all()
     selected_course_id = request.GET.get('course')
     selected_lecture_id = request.GET.get('lecture')
@@ -1594,9 +1587,6 @@ def manage_tests(request):
 
 @login_required
 def my_courses(request):
-    """
-    View for displaying courses that the current user is enrolled in
-    """
     enrollments = Enrollment.objects.filter(user=request.user).select_related('course')
     courses = [enrollment.course for enrollment in enrollments]
     

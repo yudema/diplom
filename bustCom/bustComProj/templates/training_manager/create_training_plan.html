@@ -148,7 +148,6 @@
                                 </td>
                             </tr>
                             
-                            <!-- Модальное окно для просмотра сотрудников в плане -->
                             <div class="modal fade" id="employeesModal{{ plan.id }}" tabindex="-1" aria-labelledby="employeesModalLabel{{ plan.id }}" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -188,7 +187,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Кнопка выбора всех сотрудников
     document.getElementById('selectAllEmployees').addEventListener('click', function() {
         var checkboxes = document.querySelectorAll('input[name="employees"]');
         checkboxes.forEach(function(checkbox) {
@@ -196,7 +194,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Кнопка очистки выбора сотрудников
     document.getElementById('clearAllEmployees').addEventListener('click', function() {
         var checkboxes = document.querySelectorAll('input[name="employees"]');
         checkboxes.forEach(function(checkbox) {
@@ -204,7 +201,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Поиск сотрудников
     document.getElementById('employeeSearch').addEventListener('input', function() {
         var searchText = this.value.toLowerCase();
         var employeeItems = document.querySelectorAll('.employee-item');
@@ -219,7 +215,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Очистка поиска
     document.getElementById('clearSearch').addEventListener('click', function() {
         document.getElementById('employeeSearch').value = '';
         var employeeItems = document.querySelectorAll('.employee-item');
