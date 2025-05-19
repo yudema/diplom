@@ -22,13 +22,17 @@
             {% csrf_token %}
             <div class="form-group">
                 <div class="input-group">
-                    <i class="fas fa-user input-icon"></i>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
                     <input type="text" name="username" class="form-control" placeholder="Логин" required>
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group">
-                    <i class="fas fa-lock input-icon"></i>
+                    <div class="input-icon-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                    </div>
                     <input type="password" name="password" class="form-control" placeholder="Пароль" required>
                 </div>
             </div>
@@ -88,18 +92,31 @@
         align-items: center;
     }
 
-    .input-icon {
+    .input-icon-wrapper {
         position: absolute;
-        left: var(--spacing-md);
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    .input-icon {
         color: var(--text-tertiary);
         transition: all var(--transition-normal);
     }
 
     .input-group .form-control {
-        padding-left: calc(var(--spacing-xl) + var(--spacing-xs));
+        width: 100%;
+        padding-left: 40px;
+        z-index: 1;
     }
 
-    .input-group .form-control:focus + .input-icon {
+    .input-group .form-control:focus ~ .input-icon-wrapper .input-icon {
         color: var(--primary-color);
     }
 
@@ -130,6 +147,16 @@
 
     .btn-block:hover {
         animation: pulse 2s infinite;
+    }
+
+    @media (max-width: 800px) {
+        .input-icon-wrapper {
+            display: none;
+        }
+        
+        .input-group .form-control {
+            padding-left: 12px;
+        }
     }
 
     @media (max-width: 480px) {

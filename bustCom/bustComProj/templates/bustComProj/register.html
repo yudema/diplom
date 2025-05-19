@@ -3,10 +3,208 @@
 {% block title %}Регистрация{% endblock %}
 
 {% block content %}
-    <h1>Регистрация</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Зарегистрироваться</button>
-    </form>
+<div class="registration-container">
+    <div class="registration-card">
+        <h1 class="registration-title">Регистрация</h1>
+        <p class="registration-subtitle">Создайте аккаунт для доступа к обучающим курсам</p>
+        
+        {% if form.errors %}
+            <div class="error-message">
+                <p>Пожалуйста, исправьте ошибки в форме:</p>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <p>{{ field.label }}: {{ error|striptags }}</p>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <p>{{ error|striptags }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" class="registration-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Логин:</label>
+                {{ form.username }}
+                <div class="form-hint">Не более 150 символов. Только буквы, цифры и символы @/./+/-/_</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email:</label>
+                {{ form.email }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.first_name.id_for_label }}">Имя:</label>
+                {{ form.first_name }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.last_name.id_for_label }}">Фамилия:</label>
+                {{ form.last_name }}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">Пароль:</label>
+                {{ form.password1 }}
+                <div class="form-hint">
+                    <ul>
+                        <li>Пароль не должен быть слишком похож на другие ваши личные данные.</li>
+                        <li>Пароль должен содержать минимум 8 символов.</li>
+                        <li>Пароль не должен быть слишком простым и распространенным.</li>
+                        <li>Пароль не может состоять только из цифр.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">Подтверждение пароля:</label>
+                {{ form.password2 }}
+                <div class="form-hint">Введите пароль повторно для проверки.</div>
+            </div>
+            
+            <button type="submit" class="btn-register">Зарегистрироваться</button>
+            
+            <div class="login-link">
+                Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .registration-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - var(--header-height) - var(--footer-height));
+        padding: var(--spacing-md);
+    }
+
+    .registration-card {
+        width: 100%;
+        max-width: 500px;
+        background: var(--background-light);
+        border-radius: var(--border-radius);
+        padding: var(--spacing-xl);
+        box-shadow: var(--shadow-lg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .registration-title {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-xs);
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .registration-subtitle {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        text-align: center;
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .registration-form {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
+    .form-group input {
+        padding: 12px 15px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background-color: var(--background-dark);
+        color: var(--text-primary);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.2);
+        outline: none;
+    }
+
+    .form-hint {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-top: 4px;
+    }
+
+    .form-hint ul {
+        margin: 0;
+        padding-left: 20px;
+    }
+
+    .error-message {
+        background-color: rgba(255, 0, 0, 0.1);
+        border-left: 3px solid #ff3366;
+        padding: 10px 15px;
+        margin-bottom: var(--spacing-md);
+        color: #ff3366;
+        font-size: 0.9rem;
+        border-radius: 4px;
+    }
+
+    .btn-register {
+        margin-top: var(--spacing-md);
+        padding: 12px;
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: var(--spacing-md);
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+
+    .login-link a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+        .registration-card {
+            padding: var(--spacing-md);
+        }
+
+        .registration-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
 {% endblock %}

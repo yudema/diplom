@@ -219,10 +219,12 @@
         
         .panel-actions {
             justify-content: center;
+            margin-top: 10px;
         }
 
         .panel-title {
             text-align: center;
+            font-size: 1.3rem;
         }
 
         table {
@@ -239,52 +241,111 @@
 
         tr {
             display: block;
-            margin-bottom: var(--spacing-md);
+            margin-bottom: 15px;
             background: var(--background-light);
             border-radius: var(--border-radius);
-            padding: var(--spacing-sm);
+            padding: 12px 8px;
+            position: relative;
+            border-left: 3px solid var(--primary-color);
         }
 
         td {
             display: block;
-            text-align: right;
-            padding: var(--spacing-xs) var(--spacing-sm);
+            text-align: left;
+            padding: 8px 5px;
             border: none;
             position: relative;
-            padding-left: 50%;
+            font-size: 0.9rem;
+            white-space: normal;
+            word-break: break-word;
+            overflow: visible;
+            line-height: 1.4;
         }
 
         td::before {
             content: attr(data-label);
-            position: absolute;
-            left: var(--spacing-sm);
-            width: 45%;
-            text-align: left;
-            color: var(--text-secondary);
+            display: block;
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        td:first-child {
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+        }
+
+        td:first-child::before {
+            display: inline-block;
+            margin-right: 8px;
         }
 
         .actions-cell {
             width: 100%;
             text-align: center;
-            padding-left: var(--spacing-sm);
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .actions-wrapper {
             justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-sm {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            min-width: 42px;
+            min-height: 42px;
+            border-radius: 8px;
+            margin: 0 3px;
         }
     }
 
     @media (max-width: 480px) {
+        .panel-actions {
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+        
+        .panel-actions .btn {
+            width: 100%;
+            margin: 0;
+        }
+        
         .btn-text {
-            display: none;
+            display: inline-block;
         }
-
-        .btn-sm {
-            padding: var(--spacing-xs);
+        
+        .admin-panel {
+            padding: 10px;
         }
-
+        
+        tr {
+            padding: 10px 5px;
+            margin-bottom: 10px;
+        }
+        
+        td {
+            padding: 6px 5px;
+        }
+        
         .actions-wrapper {
-            gap: var(--spacing-md);
+            flex-direction: row;
+            width: 100%;
+        }
+        
+        .actions-wrapper .btn-sm {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     }
 </style>

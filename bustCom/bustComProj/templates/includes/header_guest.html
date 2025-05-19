@@ -1,6 +1,131 @@
-<nav>
-    <a href="{% url 'home' %}"><i class="fas fa-home"></i> Главная</a>
-    <a href="{% url 'courses_list' %}"><i class="fas fa-book"></i> Курсы</a>
-    <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Войти</a>
-    <a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Регистрация</a>
+<nav id="mobile-nav">
+  <a href="{% url 'home' %}"><i class="fas fa-home"></i> Главная</a>
+  <a href="{% url 'courses_list' %}"><i class="fas fa-book"></i> Курсы</a>
+  <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Войти</a>
+  <a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Регистрация</a>
 </nav>
+<button class="burger" id="burger-menu" aria-label="Открыть меню">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<script>
+  const burger = document.getElementById('burger-menu');
+  const nav = document.getElementById('mobile-nav');
+  burger.addEventListener('click', function() {
+    nav.classList.toggle('active');
+    burger.classList.toggle('active');
+  });
+  // Theme toggle
+  const themeToggle = document.getElementById('theme-toggle-btn');
+  const root = document.documentElement;
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = root.getAttribute('data-theme') || 'dark';
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    });
+  }
+</script>
+<style>
+  .burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(0,255,255,0.08);
+    border: 2px solid var(--primary-color, #00ffe7);
+    border-radius: 12px;
+    cursor: pointer;
+    z-index: 1100;
+    box-shadow: 0 2px 8px rgba(0,255,255,0.15);
+    transition: background 0.2s, border 0.2s;
+    margin-left: auto;
+    margin-right: 1rem;
+  }
+  .burger.active, .burger:hover {
+    background: var(--primary-color, #00ffe7);
+    border-color: var(--secondary-color, #00ffcc);
+  }
+  .burger span {
+    display: block;
+    height: 5px;
+    width: 80%;
+    background: var(--primary-color, #00ffe7);
+    margin: 5px auto;
+    border-radius: 3px;
+    transition: 0.3s;
+  }
+  .burger.active span:nth-child(1) {
+    transform: translateY(10px) rotate(45deg);
+  }
+  .burger.active span:nth-child(2) {
+    opacity: 0;
+  }
+  .burger.active span:nth-child(3) {
+    transform: translateY(-10px) rotate(-45deg);
+  }
+  .theme-toggle {
+    margin-left: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 20px;
+    background: var(--background-light, #222);
+    border: 1.5px solid var(--primary-color, #00ffe7);
+    color: var(--text-primary, #fff);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s;
+    z-index: 1100;
+  }
+  .theme-toggle:hover {
+    background: var(--primary-color, #00ffe7);
+    color: var(--background-dark, #222);
+  }
+  .theme-toggle i {
+    font-size: 1.2em;
+  }
+  .theme-toggle .sun-icon { display: none; }
+  .theme-toggle .moon-icon { display: inline; }
+  [data-theme="light"] .theme-toggle .sun-icon { display: inline; }
+  [data-theme="light"] .theme-toggle .moon-icon { display: none; }
+  @media (max-width: 768px) {
+    .burger { display: flex; }
+    nav#mobile-nav {
+      display: none;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background: var(--background-light, #222);
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1rem 0.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+    nav#mobile-nav.active {
+      display: flex;
+    }
+    header {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.5rem;
+      height: 60px;
+    }
+    .logo {
+      font-size: 1.3rem;
+    }
+    .theme-toggle {
+      margin-left: 0.5rem;
+      padding: 0.4rem 0.7rem;
+      font-size: 1.1rem;
+    }
+  }
+</style>

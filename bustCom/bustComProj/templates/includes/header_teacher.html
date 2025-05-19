@@ -1,4 +1,4 @@
-<nav>
+<nav id="mobile-nav">
     <a href="{% url 'home' %}"><i class="fas fa-home"></i> Главная</a>
     <a href="{% url 'dashboard_redirect' %}"><i class="fas fa-user"></i> Кабинет</a>
     <a href="{% url 'add_course' %}"><i class="fas fa-chalkboard-teacher"></i> Создать курс</a>
@@ -6,3 +6,79 @@
     <a href="{% url 'answer_questions' %}"><i class="fas fa-question-circle"></i> Вопросы</a>
     <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Выход</a>
 </nav>
+<button class="burger" id="burger-menu" aria-label="Открыть меню">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<script>
+  const burger = document.getElementById('burger-menu');
+  const nav = document.getElementById('mobile-nav');
+  if (burger && nav) {
+    burger.addEventListener('click', function() {
+      nav.classList.toggle('active');
+      burger.classList.toggle('active');
+    });
+  }
+</script>
+<style>
+  .burger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(0,255,255,0.08);
+    border: 2px solid var(--primary-color, #00ffe7);
+    border-radius: 12px;
+    cursor: pointer;
+    z-index: 1100;
+    box-shadow: 0 2px 8px rgba(0,255,255,0.15);
+    transition: background 0.2s, border 0.2s;
+    margin-left: auto;
+    margin-right: 1rem;
+  }
+  .burger.active, .burger:hover {
+    background: var(--primary-color, #00ffe7);
+    border-color: var(--secondary-color, #00ffcc);
+  }
+  .burger span {
+    display: block;
+    height: 5px;
+    width: 80%;
+    background: var(--primary-color, #00ffe7);
+    margin: 5px auto;
+    border-radius: 3px;
+    transition: 0.3s;
+  }
+  .burger.active span:nth-child(1) {
+    transform: translateY(10px) rotate(45deg);
+  }
+  .burger.active span:nth-child(2) {
+    opacity: 0;
+  }
+  .burger.active span:nth-child(3) {
+    transform: translateY(-10px) rotate(-45deg);
+  }
+  
+  @media (max-width: 768px) {
+    .burger { display: flex; }
+    nav#mobile-nav {
+      display: none;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background: var(--background-light, #222);
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1rem 0.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      z-index: 1000;
+    }
+    nav#mobile-nav.active {
+      display: flex;
+    }
+  }
+</style>
