@@ -13,35 +13,54 @@
 
 <style>
     .home-container {
-        max-width: 1200px;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 2rem;
+        padding: 3rem;
     }
 
     .hero-section {
         text-align: center;
-        margin-bottom: 3rem;
-        padding: 3rem 1rem;
-        background: linear-gradient(45deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
-        border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 4rem;
+        padding: 5rem 2rem;
+        background: linear-gradient(45deg, rgba(var(--primary-color-rgb, 204, 0, 204), 0.2), rgba(var(--secondary-color-rgb, 0, 136, 136), 0.2));
+        border-radius: 20px;
+        border: 2px solid var(--primary-color);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
     }
 
     .hero-title {
-        font-size: clamp(2rem, 6vw, 3.5rem);
-        color: #00ffff;
-        margin-bottom: 1rem;
-        text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        font-size: clamp(2.5rem, 8vw, 4.5rem);
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        font-weight: 700;
     }
 
     .hero-subtitle {
-        font-size: clamp(1rem, 3vw, 1.25rem);
-        color: rgba(255, 255, 255, 0.7);
+        font-size: clamp(1.25rem, 4vw, 1.75rem);
+        color: var(--text-primary);
+        font-weight: 500;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    :root {
+        --primary-color-rgb: 204, 0, 204;
+        --secondary-color-rgb: 0, 136, 136;
+    }
+
+    [data-theme="dark"] {
+        --primary-color-rgb: 0, 255, 255;
+        --secondary-color-rgb: 255, 0, 255;
     }
 
     @media (max-width: 768px) {
         .home-container {
-            padding: 1rem;
+            padding: 1.5rem;
+        }
+
+        .hero-section {
+            padding: 3rem 1rem;
         }
     }
 </style>

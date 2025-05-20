@@ -59,7 +59,7 @@
         color: var(--primary-color);
         margin-bottom: 2rem;
         text-align: center;
-        text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     }
 
     .admin-actions {
@@ -74,7 +74,7 @@
         align-items: center;
         gap: 0.5rem;
         background: var(--primary-color);
-        color: var(--background);
+        color: var(--background-dark);
         padding: 0.75rem 1.5rem;
         border-radius: 8px;
         text-decoration: none;
@@ -85,7 +85,7 @@
     .backup-button:hover {
         background: var(--primary-light);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     .backup-button.restore {
@@ -108,8 +108,8 @@
     }
 
     .admin-card {
-        background: rgba(22, 22, 22, 0.95);
-        border: 1px solid rgba(0, 255, 255, 0.1);
+        background: var(--background-light);
+        border: 1px solid rgba(var(--primary-color-rgb, 0, 255, 255), 0.1);
         border-radius: 12px;
         padding: 1.5rem;
         text-decoration: none;
@@ -123,13 +123,13 @@
     .admin-card:hover {
         transform: translateY(-5px);
         border-color: var(--primary-color);
-        box-shadow: 0 5px 15px rgba(0, 255, 255, 0.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     .card-icon {
         width: 64px;
         height: 64px;
-        background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+        background: linear-gradient(135deg, rgba(var(--primary-color-rgb, 0, 255, 255), 0.1), rgba(var(--secondary-color-rgb, 255, 0, 255), 0.1));
         border-radius: 16px;
         display: flex;
         align-items: center;
@@ -144,7 +144,7 @@
     }
 
     .admin-card:hover .card-icon {
-        background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2));
+        background: linear-gradient(135deg, rgba(var(--primary-color-rgb, 0, 255, 255), 0.2), rgba(var(--secondary-color-rgb, 255, 0, 255), 0.2));
         transform: scale(1.1);
     }
 
@@ -158,6 +158,17 @@
         color: var(--text-primary);
         text-align: center;
         margin: 0;
+    }
+
+    /* Define fallback RGB values for CSS variables */
+    :root {
+        --primary-color-rgb: 204, 0, 204;
+        --secondary-color-rgb: 0, 136, 136;
+    }
+
+    [data-theme="dark"] {
+        --primary-color-rgb: 0, 255, 255;
+        --secondary-color-rgb: 255, 0, 255;
     }
 
     @media (max-width: 768px) {

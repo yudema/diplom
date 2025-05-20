@@ -15,16 +15,16 @@
 }
 
 :root[data-theme="light"] {
-    --primary-color: #ff00ff;
-    --primary-dark: #cc00cc;
+    --primary-color: #cc00cc;
+    --primary-dark: #aa00aa;
     --primary-light: #ff80ff;
-    --secondary-color: #00ffff;
-    --secondary-dark: #00cccc;
+    --secondary-color: #008888;
+    --secondary-dark: #006666;
     --secondary-light: #80ffff;
     --background-dark: #f5f5f5;
     --background-light: #ffffff;
     --background-lighter: #e0e0e0;
-    --text-primary: #000000;
+    --text-primary: #121212;
     --text-secondary: rgba(0, 0, 0, 0.7);
     --text-tertiary: rgba(0, 0, 0, 0.5);
 }
