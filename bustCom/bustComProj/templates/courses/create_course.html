@@ -57,7 +57,7 @@
     }
 
     .form-container {
-        background: rgba(22, 22, 22, 0.95);
+        background: var(--background-light);
         border: 1px solid rgba(0, 255, 255, 0.1);
         border-radius: 12px;
         padding: 2rem;
@@ -65,7 +65,7 @@
 
     .page-title {
         font-size: clamp(1.5rem, 4vw, 2rem);
-        color: #00ffff;
+        color: var(--primary-color);
         margin-bottom: 2rem;
         text-align: center;
         text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
@@ -84,16 +84,16 @@
     }
 
     .form-group label {
-        color: rgba(255, 255, 255, 0.9);
+        color: var(--text-primary);
         font-size: 0.9rem;
     }
 
     .form-control {
-        background: rgba(255, 255, 255, 0.05);
+        background: var(--background-lighter);
         border: 1px solid rgba(0, 255, 255, 0.2);
         border-radius: 6px;
         padding: 0.75rem;
-        color: #fff;
+        color: var(--text-primary);
         font-size: 0.9rem;
         width: 100%;
         transition: all 0.2s ease;
@@ -101,17 +101,17 @@
 
     .form-control:focus {
         outline: none;
-        border-color: rgba(0, 255, 255, 0.5);
+        border-color: var(--primary-color);
         box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.1);
     }
 
     .help-text {
-        color: rgba(255, 255, 255, 0.5);
+        color: var(--text-secondary);
         font-size: 0.8rem;
     }
 
     .error-messages {
-        color: #ff4444;
+        color: var(--danger-color);
         font-size: 0.8rem;
         margin-top: 0.25rem;
     }
@@ -142,7 +142,7 @@
 
     .btn-primary {
         background: rgba(0, 255, 255, 0.1);
-        color: #00ffff;
+        color: var(--primary-color);
         border: 1px solid rgba(0, 255, 255, 0.2);
     }
 
@@ -152,8 +152,8 @@
     }
 
     .btn-secondary {
-        background: rgba(255, 255, 255, 0.1);
-        color: #fff;
+        background: var(--background-lighter);
+        color: var(--text-primary);
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
@@ -175,13 +175,13 @@
     .message.success {
         background: rgba(0, 255, 149, 0.1);
         border: 1px solid rgba(0, 255, 149, 0.2);
-        color: #00ff95;
+        color: var(--success-color);
     }
 
     .message.error {
         background: rgba(255, 68, 68, 0.1);
         border: 1px solid rgba(255, 68, 68, 0.2);
-        color: #ff4444;
+        color: var(--danger-color);
     }
 
     @media (max-width: 768px) {

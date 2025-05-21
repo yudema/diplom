@@ -4,345 +4,265 @@
 {% block title %}{{ course.name }}{% endblock %}
 
 {% block content %}
-<div class="course-detail-container">
-    <div class="course-header">
-        <h1 class="course-title">{{ course.name }}</h1>
-        <div class="course-meta">
-            <div class="meta-item">
-                <i class="fas fa-clock"></i>
-                <span>{{ course.duration }} часов</span>
-            </div>
-            <div class="meta-item">
-                <i class="fas fa-user-graduate"></i>
-                <span>{{ course.teacher.get_full_name }}</span>
-            </div>
-            <div class="meta-item">
-                <i class="fas fa-info-circle"></i>
-                <span>{{ course.get_status_display }}</span>
-            </div>
+<div class="course-detail-modern">
+    <div class="course-hero">
+        <h1 class="course-hero-title">{{ course.name }}</h1>
+        <div class="course-hero-meta">
+            <span><i class="fas fa-clock"></i> {{ course.duration }} ч.</span>
+            <span><i class="fas fa-user-graduate"></i> {{ course.teacher.get_full_name }}</span>
+            <span><i class="fas fa-info-circle"></i> {{ course.get_status_display }}</span>
+        </div>
+        <div class="course-hero-desc">{{ course.description }}</div>
+        <div class="course-hero-actions">
+            {% if user.is_authenticated %}
+                {% if is_enrolled %}
+                    <span class="enrolled-badge"><i class="fas fa-check-circle"></i> Вы записаны</span>
+                    <a href="{% url 'course_lectures' course.id %}" class="btn-modern btn-gradient-main">
+                        <i class="fas fa-play"></i> Продолжить обучение
+                    </a>
+                {% else %}
+                    <a href="{% url 'enroll_course' course.id %}" class="btn-modern btn-gradient-main">
+                        <i class="fas fa-plus"></i> Записаться на курс
+                    </a>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}" class="btn-modern btn-gradient-main">
+                    <i class="fas fa-sign-in-alt"></i> Войти для записи
+                </a>
+            {% endif %}
         </div>
     </div>
 
-    <div class="course-description">
-        <p>{{ course.description }}</p>
-    </div>
-
-    <div class="course-actions">
-        {% if user.is_authenticated %}
-            {% if is_enrolled %}
-                <div class="enrolled-status">
-                    <i class="fas fa-check-circle"></i>
-                    <span>Вы записаны на этот курс</span>
+    <div class="course-lectures-block">
+        <h2 class="lectures-block-title">Лекции курса</h2>
+        {% if lectures %}
+        <div class="lectures-modern-list">
+            {% for lecture in lectures %}
+            <div class="lecture-modern-card">
+                <div class="lecture-modern-info">
+                    <span class="lecture-modern-icon"><i class="fas fa-book-reader"></i></span>
+                    <span class="lecture-modern-title">{{ lecture.title }}</span>
                 </div>
-                <a href="{% url 'course_lectures' course.id %}" class="btn-action btn-continue">
-                    <i class="fas fa-play"></i>
-                    <span>Продолжить обучение</span>
+                {% if is_enrolled %}
+                <a href="{% url 'lecture_detail' lecture.id %}" class="btn-modern btn-gradient-view">
+                    <i class="fas fa-eye"></i> Смотреть
                 </a>
-            {% else %}
-                <a href="{% url 'enroll_course' course.id %}" class="btn-action btn-enroll">
-                    <i class="fas fa-plus"></i>
-                    <span>Записаться на курс</span>
-                </a>
-            {% endif %}
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
         {% else %}
-            <a href="{% url 'login' %}" class="btn-action btn-enroll">
-                <i class="fas fa-sign-in-alt"></i>
-                <span>Войти для записи</span>
-            </a>
+        <div class="no-lectures-modern">
+            <span class="no-lectures-icon"><i class="fas fa-book"></i></span>
+            <p>Пока нет лекций</p>
+        </div>
         {% endif %}
     </div>
 
-    {% if lectures %}
-        <div class="lectures-section">
-            <h2 class="section-title">Лекции курса</h2>
-            <div class="lectures-list">
-                {% for lecture in lectures %}
-                    <div class="lecture-item">
-                        <div class="lecture-info">
-                            <i class="fas fa-book-reader"></i>
-                            <span class="lecture-title">{{ lecture.title }}</span>
-                        </div>
-                        {% if is_enrolled %}
-                            <a href="{% url 'lecture_detail' lecture.id %}" class="btn-action btn-view">
-                                <i class="fas fa-eye"></i>
-                                <span>Смотреть</span>
-                            </a>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    {% else %}
-        <div class="no-lectures">
-            <div class="no-lectures-icon">
-                <i class="fas fa-book"></i>
-            </div>
-            <p>Пока нет лекций</p>
-        </div>
-    {% endif %}
-
     {% if user.profile.role == "teacher" or user.profile.role == "admin" %}
-        <div class="admin-actions">
-            <a href="{% url 'edit_course' course.id %}" class="btn-action btn-edit">
-                <i class="fas fa-edit"></i>
-                <span>Редактировать</span>
-            </a>
-            <a href="{% url 'add_lecture' course.id %}" class="btn-action btn-add">
-                <i class="fas fa-plus"></i>
-                <span>Добавить лекцию</span>
-            </a>
-            <a href="{% url 'delete_course' course.id %}" class="btn-action btn-danger">
-                <i class="fas fa-trash"></i>
-                <span>Удалить</span>
-            </a>
-        </div>
+    <div class="admin-modern-actions">
+        <a href="{% url 'edit_course' course.id %}" class="btn-modern btn-gradient-edit"><i class="fas fa-edit"></i> Редактировать</a>
+        <a href="{% url 'add_lecture' course.id %}" class="btn-modern btn-gradient-add"><i class="fas fa-plus"></i> Добавить лекцию</a>
+        <a href="{% url 'delete_course' course.id %}" class="btn-modern btn-gradient-danger"><i class="fas fa-trash"></i> Удалить</a>
+    </div>
     {% endif %}
 </div>
 
 <style>
-    .course-detail-container {
-        padding: clamp(1rem, 3vw, 2rem);
-        max-width: 1200px;
-        margin: 0 auto;
-    }
+.course-detail-modern {
+    max-width: 900px;
+    margin: 0 auto 3rem auto;
+    padding: 2.5rem 1rem 1rem 1rem;
+}
+.course-hero {
+    background: var(--background-light);
+    border-radius: 2rem;
+    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.10);
+    padding: 3rem 2rem 2rem 2rem;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+.course-hero-title {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    color: var(--primary-color);
+    font-weight: 800;
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.01em;
+}
+.course-hero-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+.course-hero-meta i {
+    color: var(--primary-color);
+    margin-right: 0.4em;
+}
+.course-hero-desc {
+    color: var(--text-primary);
+    font-size: 1.15rem;
+    margin-bottom: 2rem;
+    line-height: 1.7;
+    font-weight: 500;
+}
+.course-hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+}
+.enrolled-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(90deg, #00ff95 0%, #00cfff 100%);
+    color: #fff;
+    font-weight: 600;
+    border-radius: 2rem;
+    padding: 0.6rem 1.3rem;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(0,255,149,0.10);
+}
 
-    .course-header {
-        margin-bottom: 2rem;
-    }
+.btn-modern {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.08rem;
+    font-weight: 600;
+    border-radius: 2rem;
+    padding: 0.7rem 1.7rem;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.18s;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+.btn-gradient-main {
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: #fff;
+}
+.btn-gradient-main:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.13);
+}
+.btn-gradient-view {
+    background: linear-gradient(90deg, #ff00ff 0%, #00ffff 100%);
+    color: #fff;
+}
+.btn-gradient-view:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 4px 18px rgba(0,0,0,0.13);
+}
+.btn-gradient-edit {
+    background: linear-gradient(90deg, #ffaa00 0%, #ff8800 100%);
+    color: #fff;
+}
+.btn-gradient-edit:hover {
+    filter: brightness(1.08);
+}
+.btn-gradient-add {
+    background: linear-gradient(90deg, #00ffff 0%, #00ff95 100%);
+    color: #fff;
+}
+.btn-gradient-add:hover {
+    filter: brightness(1.08);
+}
+.btn-gradient-danger {
+    background: linear-gradient(90deg, #ff4444 0%, #ff8888 100%);
+    color: #fff;
+}
+.btn-gradient-danger:hover {
+    filter: brightness(1.08);
+}
 
-    .course-title {
-        font-size: clamp(1.5rem, 5vw, 2.5rem);
-        color: #fff;
-        margin-bottom: 1rem;
-        font-weight: 600;
-    }
-
-    .course-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: rgba(255, 255, 255, 0.7);
-        font-size: clamp(0.8rem, 1.5vw, 0.9rem);
-    }
-
-    .meta-item i {
-        color: #00ffff;
-    }
-
-    .course-description {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: clamp(0.9rem, 2vw, 1rem);
-        line-height: 1.6;
-        margin-bottom: 2rem;
-    }
-
-    .course-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    .enrolled-status {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1rem;
-        background: rgba(0, 255, 149, 0.1);
-        border: 1px solid rgba(0, 255, 149, 0.2);
-        border-radius: 8px;
-        color: #00ff95;
-        font-size: clamp(0.8rem, 1.5vw, 0.9rem);
-    }
-
-    .btn-action {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1rem;
-        border-radius: 8px;
-        font-size: clamp(0.8rem, 1.5vw, 0.9rem);
-        font-weight: 500;
-        text-decoration: none;
-        transition: all 0.2s ease;
-    }
-
-    .btn-continue {
-        color: #00ff95;
-        background: rgba(0, 255, 149, 0.1);
-        border: 1px solid rgba(0, 255, 149, 0.2);
-    }
-
-    .btn-continue:hover {
-        background: rgba(0, 255, 149, 0.15);
-        border-color: rgba(0, 255, 149, 0.3);
-    }
-
-    .btn-enroll {
-        color: #00ffff;
-        background: rgba(0, 255, 255, 0.1);
-        border: 1px solid rgba(0, 255, 255, 0.2);
-    }
-
-    .btn-enroll:hover {
-        background: rgba(0, 255, 255, 0.15);
-        border-color: rgba(0, 255, 255, 0.3);
-    }
-
-    .btn-view {
-        color: #ff00ff;
-        background: rgba(255, 0, 255, 0.1);
-        border: 1px solid rgba(255, 0, 255, 0.2);
-    }
-
-    .btn-view:hover {
-        background: rgba(255, 0, 255, 0.15);
-        border-color: rgba(255, 0, 255, 0.3);
-    }
-
-    .lectures-section {
-        margin-top: 3rem;
-    }
-
-    .section-title {
-        font-size: clamp(1.25rem, 4vw, 1.75rem);
-        color: #fff;
-        margin-bottom: 1.5rem;
-        font-weight: 500;
-    }
-
-    .lectures-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    .lecture-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1rem;
-        background: rgba(22, 22, 22, 0.95);
-        border: 1px solid rgba(0, 255, 255, 0.1);
-        border-radius: 8px;
-        gap: 1rem;
-    }
-
-    .lecture-info {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        color: rgba(255, 255, 255, 0.9);
-    }
-
-    .lecture-info i {
-        color: #00ffff;
-    }
-
-    .lecture-title {
-        font-size: clamp(0.9rem, 2vw, 1rem);
-    }
-
-    .no-lectures {
-        text-align: center;
-        padding: 3rem 1rem;
-        background: rgba(22, 22, 22, 0.95);
-        border: 1px solid rgba(0, 255, 255, 0.1);
-        border-radius: 12px;
-    }
-
-    .no-lectures-icon {
-        width: 64px;
-        height: 64px;
-        margin: 0 auto 1rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(45deg, #00ffff20, #ff00ff20);
-        border-radius: 12px;
-    }
-
-    .no-lectures-icon i {
-        font-size: 1.5rem;
-        color: #00ffff;
-    }
-
-    .no-lectures p {
-        color: rgba(255, 255, 255, 0.7);
-        margin: 0;
-    }
-
-    .admin-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        margin-top: 2rem;
-        padding-top: 2rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .btn-edit {
-        color: #ffaa00;
-        background: rgba(255, 170, 0, 0.1);
-        border: 1px solid rgba(255, 170, 0, 0.2);
-    }
-
-    .btn-edit:hover {
-        background: rgba(255, 170, 0, 0.15);
-        border-color: rgba(255, 170, 0, 0.3);
-    }
-
-    .btn-add {
-        color: #00ffff;
-        background: rgba(0, 255, 255, 0.1);
-        border: 1px solid rgba(0, 255, 255, 0.2);
-    }
-
-    .btn-add:hover {
-        background: rgba(0, 255, 255, 0.15);
-        border-color: rgba(0, 255, 255, 0.3);
-    }
-
-    .btn-danger {
-        color: #ff4444;
-        background: rgba(255, 68, 68, 0.1);
-        border: 1px solid rgba(255, 68, 68, 0.2);
-    }
-
-    .btn-danger:hover {
-        background: rgba(255, 68, 68, 0.15);
-        border-color: rgba(255, 68, 68, 0.3);
-    }
-
-    @media (max-width: 768px) {
-        .course-meta {
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .course-actions {
-            flex-direction: column;
-        }
-
-        .btn-action {
-            width: 100%;
-        }
-
-        .lecture-item {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .lecture-item .btn-action {
-            width: 100%;
-        }
-    }
+.course-lectures-block {
+    margin-top: 2.5rem;
+}
+.lectures-block-title {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+.lectures-modern-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+.lecture-modern-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--background-light);
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 16px 0 rgba(0,0,0,0.08);
+    padding: 1.2rem 1.5rem;
+    transition: box-shadow 0.18s, transform 0.18s;
+    color: var(--text-primary);
+}
+.lecture-modern-card:hover {
+    box-shadow: 0 6px 32px 0 rgba(0,0,0,0.13);
+    transform: translateY(-2px) scale(1.01);
+}
+.lecture-modern-info {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+}
+.lecture-modern-icon {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    background: var(--background-lighter);
+    border-radius: 50%;
+    width: 2.3rem;
+    height: 2.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.lecture-modern-title {
+    font-size: 1.08rem;
+    font-weight: 500;
+}
+.no-lectures-modern {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: var(--background-light);
+    border-radius: 1.2rem;
+    color: var(--text-secondary);
+    box-shadow: 0 2px 16px 0 rgba(0,0,0,0.07);
+}
+.no-lectures-icon {
+    font-size: 2.2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    display: inline-block;
+}
+.admin-modern-actions {
+    display: flex;
+    gap: 1.2rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+}
+@media (max-width: 900px) {
+    .course-detail-modern { padding: 1rem; }
+    .course-hero { padding: 2rem 0.5rem 1.5rem 0.5rem; }
+}
+@media (max-width: 600px) {
+    .course-hero-title { font-size: 1.5rem; }
+    .course-hero-meta { gap: 1rem; font-size: 0.98rem; }
+    .course-hero { padding: 1.2rem 0.2rem 1rem 0.2rem; }
+    .lectures-modern-list { gap: 0.7rem; }
+    .lecture-modern-card { padding: 0.7rem 0.5rem; }
+    .admin-modern-actions { gap: 0.5rem; }
+}
 </style>
 {% endblock %}

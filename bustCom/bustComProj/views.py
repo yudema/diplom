@@ -306,22 +306,9 @@ def course_detail(request, course_id):
     
     is_enrolled = Enrollment.objects.filter(user=request.user, course=course).exists()
     
-    return render(request, 'bustComProj/course_detail.html', {
-        'course': course,
-        'lectures': lectures,
-        'is_enrolled': is_enrolled
-    })
-
-def course_detail(request, course_id):
-    course = Course.objects.get(id=course_id)
-    lectures = Lecture.objects.filter(course_id=course_id).order_by('order_num')
-    
-    enrolled = False
-    if request.user.is_authenticated:
-        enrolled = Enrollment.objects.filter(user=request.user, course=course).exists()
-    
+    # Check for completed lectures if enrolled
     user_progress = None
-    if enrolled:
+    if is_enrolled:
         completed_lectures = CompletedLecture.objects.filter(
             user=request.user, 
             lecture__course=course
@@ -340,12 +327,15 @@ def course_detail(request, course_id):
             'progress_percentage': progress_percentage
         }
     
-    return render(request, 'course_detail.html', {
+    return render(request, 'bustComProj/course_detail.html', {
         'course': course,
         'lectures': lectures,
-        'enrolled': enrolled,
-        'user_progress': user_progress
+        'is_enrolled': is_enrolled,
+        'enrolled': is_enrolled,  # For compatibility with both templates
+        'user_progress': user_progress,
+        'progress_percentage': progress_percentage if 'progress_percentage' in locals() else 0
     })
+
 @login_required
 def course_lectures(request, course_id):
     course = get_object_or_404(Course, id=course_id)
